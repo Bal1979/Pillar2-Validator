@@ -72,6 +72,31 @@ holdes ajour af `tools/update_docs.py` — se blokken nedenfor:
 - **Tests** `tests/test_smoke.py` (16) + fixture `tests/fixtures/gir_valid.xml`
   (minimal skemagyldig GIR). Alle grønne.
 
+## Central brugerstyring (balai_auth) — login deles på tværs af *.balai.dk
+
+Pillar II er koblet på den fælles BALAI-brugerstyring, præcis som SAF-T:
+
+- **Pakke:** `balai_auth/` (kopi af den delte pakke) + `auth.py`-shim med
+  `TOOL_SLUG = "pillar2"`. `app.py` kalder `auth_module.init_app(app)` og gater
+  ruterne med `@requires_auth` (kræver BÅDE login OG adgang til slug `pillar2`).
+  `/sundhed` er bevidst offentlig (health check). Ikke-loggede sendes til
+  `AUTH_BASE_URL` (auth.balai.dk).
+- **Slug registreret centralt:** `pillar2` er tilføjet i `balai-auth`'s
+  `balai_auth/config.py` TOOLS — så admin-UI'et på auth.balai.dk kan tildele
+  adgang. **Kræver redeploy af balai-auth** for at slå igennem i admin.
+- **Env-variable (Railway, SKAL matche SAF-T for delt login):** `SECRET_KEY`,
+  `SESSION_COOKIE_DOMAIN=.balai.dk`, `AUTH_BASE_URL=https://auth.balai.dk`,
+  `DATABASE_URL` (delt Postgres = central brugerdb), `FLASK_ENV=production`.
+  Pillar II har endnu ingen egen datalagring, så `RUNS_DB_PATH`/`AUTH_DB_PATH`
+  er ikke i brug. Pillar II skal serveres på et `*.balai.dk`-subdomæne, ellers
+  deles cookien ikke.
+- **Afhængigheder:** `SQLAlchemy` + `psycopg[binary]` i `requirements.txt`
+  (kør `pip install -r requirements.txt` før pytest første gang).
+- **Tests:** `conftest.py` sætter en isoleret temp-SQLite som auth-DB (ingen
+  delt Postgres i test). `test_app_requires_login` bekræfter gating;
+  `_login_pillar2()` opretter en all_access-bruger og logger ind via
+  session_transaction. Landing-kort på balai.dk tilføjes når subdomænet er live.
+
 ## Genoptag hurtigt
 
 ```bash

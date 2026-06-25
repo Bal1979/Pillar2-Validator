@@ -34,6 +34,15 @@ if not _secret:
     logger.warning("SECRET_KEY ikke sat — bruger usikker dev-nøgle.")
 app.config["SECRET_KEY"] = _secret
 
+# --- Central BALAI-brugerstyring -------------------------------------------
+# Delt login på tværs af *.balai.dk via balai_auth. Ikke-loggede brugere sendes
+# til auth.balai.dk; @requires_auth kræver BÅDE login OG adgang til "pillar2".
+# init_app sætter selv SECRET_KEY/cookie-domæne fra miljøet (samme som SAF-T).
+import auth as auth_module
+
+auth_module.init_app(app)
+requires_auth = auth_module.login_required
+
 # --- Upload-grænse ---------------------------------------------------------
 MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "200"))
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
@@ -67,6 +76,7 @@ def _security_headers(resp):
 
 # --- Ruter -----------------------------------------------------------------
 @app.route("/")
+@requires_auth
 def index():
     return render_template(
         "index.html",
@@ -94,6 +104,7 @@ def sundhed():
 
 
 @app.route("/valider", methods=["POST"])
+@requires_auth
 def valider():
     """Modtag en GIR-fil, kør pipelinen, returnér outcome som JSON.
 

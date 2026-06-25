@@ -141,21 +141,52 @@ def test_report_context_builds():
 
 
 # --- App booter ------------------------------------------------------------
+def _login_pillar2(app_module):
+    """Returnér en test-client logget ind som all_access-bruger (har dermed
+    adgang til 'pillar2'). Bruger den isolerede test-auth-DB fra conftest."""
+    from balai_auth import repo, core
+    app = app_module.app
+    app.config["TESTING"] = True
+    with app.app_context():
+        email = "test@balai.dk"
+        u = repo.get_user_by_email(email)
+        if u is None:
+            repo.create_user(email, core.hash_password("test-password-12"),
+                             all_access=True)
+            u = repo.get_user_by_email(email)
+        uid, tv = u["id"], u["token_version"]
+    client = app.test_client()
+    with client.session_transaction() as sess:
+        sess["uid"] = uid
+        sess["tv"] = tv
+        sess["iat"] = repo.now().isoformat()
+    return client
+
+
 def test_app_health_endpoint():
-    os.environ.setdefault("SECRET_KEY", "test")
     import app as app_module
     client = app_module.app.test_client()
-    r = client.get("/sundhed")
+    r = client.get("/sundhed")              # offentlig (health check)
     assert r.status_code == 200
     body = r.get_json()
     assert body["status"] == "ok"
     assert body["gir_skema_til_stede"] is True
 
 
-def test_app_valider_renders_report():
-    os.environ.setdefault("SECRET_KEY", "test")
+def test_app_requires_login():
+    """Sikkerhed: forsiden og /valider er bag central login."""
     import app as app_module
     client = app_module.app.test_client()
+    r = client.get("/")
+    assert r.status_code == 302
+    assert "/login" in r.headers.get("Location", "")
+    rj = client.post("/valider", headers={"Accept": "application/json"})
+    assert rj.status_code == 401
+
+
+def test_app_valider_renders_report():
+    import app as app_module
+    client = _login_pillar2(app_module)
     with open(VALID_GIR, "rb") as fh:
         r = client.post("/valider", data={"file": (fh, "gir.xml")},
                         content_type="multipart/form-data")
@@ -165,9 +196,8 @@ def test_app_valider_renders_report():
 
 
 def test_app_valider_json_format():
-    os.environ.setdefault("SECRET_KEY", "test")
     import app as app_module
-    client = app_module.app.test_client()
+    client = _login_pillar2(app_module)
     with open(VALID_GIR, "rb") as fh:
         r = client.post("/valider?format=json",
                         data={"file": (fh, "gir.xml")},
