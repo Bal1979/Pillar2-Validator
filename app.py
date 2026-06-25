@@ -54,8 +54,8 @@ CATALOG = load_catalog()
 # --- Sikkerhedsheaders (mirror SAF-T) --------------------------------------
 _CSP = (
     "default-src 'self'; "
-    "script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
+    "script-src 'self'; "
+    "style-src 'self' 'unsafe-inline'; "
     "img-src 'self' data:; font-src 'self' data:; connect-src 'self'; "
     "object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 )
@@ -78,11 +78,13 @@ def _security_headers(resp):
 @app.route("/")
 @requires_auth
 def index():
+    from validator.rules.oecd_rules import coverage
     return render_template(
         "index.html",
         catalog_version=CATALOG.catalog_version,
         layers=sorted(CATALOG.layers.values(), key=lambda l: l.id),
         rule_count=len(CATALOG.rules),
+        oecd_executable=coverage()["executable"],
     )
 
 

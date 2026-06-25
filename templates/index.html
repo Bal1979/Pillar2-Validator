@@ -4,39 +4,83 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pillar II GIR-Validator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css?v=20260625">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231B365D'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='16' font-weight='700' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <main class="max-w-3xl mx-auto px-6 py-12">
-    <h1 class="text-2xl font-semibold">Pillar II GIR-Validator</h1>
-    <p class="mt-2 text-slate-600">
-      Validér en færdig GloBE Information Return (GIR) mod OECD's officielle
-      skema, de nummererede valideringsregler, juni-2026-guidance og danske
-      felt-regler. Regelkatalog v{{ catalog_version }} · {{ rule_count }} regler.
-    </p>
-
-    <div class="mt-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-      <strong>Fase 1:</strong> lag 1 (well-formed XML + XSD-validering mod OECD's
-      GIR-skema) og lag 2 (strukturel integritet) er aktive. Lag 3-8 følger.
+<body>
+  <div class="container">
+    <!-- Top-bar: BALAI-hjem (blåt B) + logget-ind bruger -->
+    <div class="top-bar">
+      <a class="balai-home" href="https://www.balai.dk" title="Tilbage til balai.dk" style="margin-right:auto">
+        <span class="balai-home-mark" aria-hidden="true">B</span>
+        <span class="balai-home-text">
+          <span class="balai-home-top">BALAI</span>
+          <span class="balai-home-sub">Pillar II GIR-Validator</span>
+        </span>
+      </a>
+      {% set u = current_user() %}
+      {% if u %}
+      <div class="userbar">
+        <span class="userbar-email">{{ u.email }}</span>
+        <a class="logout" href="/logout">Log ud</a>
+      </div>
+      {% endif %}
     </div>
 
-    <form action="/valider" method="post" enctype="multipart/form-data"
-          class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-      <input type="file" name="file" accept=".xml" required
-             class="block text-sm file:mr-4 file:rounded file:border-0
-                    file:bg-slate-800 file:px-4 file:py-2 file:text-white">
-      <button type="submit"
-              class="rounded bg-slate-800 px-4 py-2 text-sm font-medium text-white">
-        Validér
-      </button>
-    </form>
+    <header>
+      <h1>Pillar II GIR-Validator</h1>
+      <p class="subtitle">Validér en færdig GloBE Information Return mod OECD's officielle skema og valideringsregler</p>
+    </header>
 
-    <h2 class="mt-10 text-lg font-semibold">Valideringslag</h2>
-    <ol class="mt-3 space-y-1 text-sm">
+    <!-- Sådan virker valideringen -->
+    <div class="how-it-works">
+      <h2 class="how-title">Sådan virker valideringen</h2>
+      <div class="how-cards">
+        <div class="how-card how-card-phase1">
+          <div class="how-card-badge">1</div>
+          <h3>Teknisk validering (lag 1-2)</h3>
+          <p>Tjekker at filen er gyldig XML, overholder OECD's officielle GIR-XSD-skema, og har korrekt struktur (rod, MessageSpec, GLOBEBody, jurisdiktioner). Blokerende fejl her stopper valideringen.</p>
+        </div>
+        <div class="how-card how-card-phase2">
+          <div class="how-card-badge">2</div>
+          <h3>OECD-regler (lag 3-4)</h3>
+          <p>Kører OECD's nummererede valideringsregler på fil- og record-niveau — fra DocRefId-unikhed og korrektionslogik til beregningskontroller og kryds-referencer mellem enheder.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="rulecount" style="text-align:center; margin: 4px 0 20px;">
+      Regelkatalog v{{ catalog_version }} ·
+      <strong>{{ rule_count }} strukturregler</strong> +
+      <strong>{{ oecd_executable }} OECD-kontroller</strong>
+    </p>
+
+    <!-- Upload -->
+    <div class="upload-area">
+      <div class="upload-icon">&#128196;</div>
+      <p class="upload-text">Vælg din GIR XML-fil</p>
+      <form action="/valider" method="post" enctype="multipart/form-data">
+        <label class="upload-btn">
+          Vælg fil
+          <input type="file" name="file" accept=".xml" required>
+        </label>
+        <p class="upload-formats">Understøtter OECD GIR XML-filer (v1.0 / v2.0)</p>
+        <button type="submit" class="btn" style="margin-top:14px; background:#1B365D; color:#fff;">Validér</button>
+      </form>
+    </div>
+
+    <!-- Valideringslag -->
+    <h2 style="margin-top:36px; font-size:1.05rem; color:#1a1a2e;">Valideringslag</h2>
+    <ol class="layer-list">
       {% for layer in layers %}
-      <li><span class="inline-block w-6 text-slate-400">{{ layer.id }}.</span>{{ layer.label_da }}</li>
+      <li><span class="ln">{{ layer.id }}.</span>{{ layer.label_da }}</li>
       {% endfor %}
     </ol>
-  </main>
+  </div>
+
+  <footer class="site-footer">
+    <span>BALAI · Pillar II GIR-Validator — research preview</span>
+    <a href="https://www.balai.dk">balai.dk</a>
+  </footer>
 </body>
 </html>

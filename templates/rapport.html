@@ -4,86 +4,114 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Valideringsrapport — Pillar II GIR</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css?v=20260625">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231B365D'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='16' font-weight='700' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <main class="max-w-3xl mx-auto px-6 py-10">
-    <a href="/" class="text-sm text-slate-500 hover:underline">&larr; Ny validering</a>
+<body>
+  <div class="container">
+    <!-- Top-bar -->
+    <div class="top-bar">
+      <a class="balai-home" href="https://www.balai.dk" title="Tilbage til balai.dk" style="margin-right:auto">
+        <span class="balai-home-mark" aria-hidden="true">B</span>
+        <span class="balai-home-text">
+          <span class="balai-home-top">BALAI</span>
+          <span class="balai-home-sub">Pillar II GIR-Validator</span>
+        </span>
+      </a>
+      {% set u = current_user() %}
+      {% if u %}
+      <div class="userbar">
+        <span class="userbar-email">{{ u.email }}</span>
+        <a class="logout" href="/logout">Log ud</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <a href="/" class="back-link">&larr; Ny validering</a>
 
     <!-- Dom -->
-    <div class="mt-4 rounded-xl border bg-white p-6 shadow-sm">
-      <div class="flex items-center gap-3">
-        <span class="inline-block h-3 w-3 rounded-full" style="background: {{ r.verdict_color }}"></span>
-        <h1 class="text-xl font-semibold" style="color: {{ r.verdict_color }}">{{ r.verdict_label }}</h1>
-      </div>
-      <p class="mt-2 text-sm text-slate-600">{{ r.verdict_hint }}</p>
-
-      <div class="mt-4 flex flex-wrap gap-2">
-        {% for s in r.severity_summary %}
-        <span class="rounded-full px-3 py-1 text-xs font-medium text-white" style="background: {{ s.color }}">
-          {{ s.count }} {{ s.label }}
-        </span>
-        {% else %}
-        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">Ingen fund</span>
-        {% endfor %}
+    {% set verdict_class = 'status-valid' if r.verdict == 'godkendt' else ('status-warning' if r.verdict == 'betinget_godkendt' else 'status-invalid') %}
+    <div class="status-banner {{ verdict_class }}" style="display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:12px;">
+      <span class="status-icon" style="font-size:1.6rem">
+        {%- if verdict_class == 'status-valid' %}&#9989;{% elif verdict_class == 'status-warning' %}&#9888;&#65039;{% else %}&#10060;{% endif -%}
+      </span>
+      <div>
+        <h2 style="margin:0; font-size:1.15rem; color:{{ r.verdict_color }}">{{ r.verdict_label }}</h2>
+        <p style="margin:2px 0 0; font-size:.9rem; color:#555">{{ r.verdict_hint }}</p>
       </div>
     </div>
 
+    <!-- Severity-chips -->
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;">
+      {% for s in r.severity_summary %}
+      <span class="issue-badge" style="background:{{ s.color }}; color:#fff; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:600;">
+        {{ s.count }} {{ s.label }}
+      </span>
+      {% else %}
+      <span class="issue-badge badge-info" style="padding:5px 12px; border-radius:999px;">Ingen fund</span>
+      {% endfor %}
+    </div>
+
     <!-- Filinfo -->
-    <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-3">
-      {% if r.company.name %}<div><dt class="text-slate-400">Koncern</dt><dd>{{ r.company.name }}</dd></div>{% endif %}
-      {% if r.company.message_ref_id %}<div><dt class="text-slate-400">MessageRefId</dt><dd>{{ r.company.message_ref_id }}</dd></div>{% endif %}
-      {% if r.company.message_type %}<div><dt class="text-slate-400">MessageTypeIndic</dt><dd>{{ r.company.message_type }}</dd></div>{% endif %}
-      {% if r.company.reporting_period %}<div><dt class="text-slate-400">Rapporteringsperiode</dt><dd>{{ r.company.reporting_period }}</dd></div>{% endif %}
-      {% if r.gir_version %}<div><dt class="text-slate-400">GIR-version</dt><dd>{{ r.gir_version }}</dd></div>{% endif %}
-      <div><dt class="text-slate-400">Lag kørt</dt><dd>{{ r.layers_run|join(', ') }}</dd></div>
+    <dl class="meta-grid">
+      {% if r.company.name %}<div><dt>Koncern</dt><dd>{{ r.company.name }}</dd></div>{% endif %}
+      {% if r.company.message_ref_id %}<div><dt>MessageRefId</dt><dd>{{ r.company.message_ref_id }}</dd></div>{% endif %}
+      {% if r.company.message_type %}<div><dt>MessageTypeIndic</dt><dd>{{ r.company.message_type }}</dd></div>{% endif %}
+      {% if r.company.reporting_period %}<div><dt>Rapporteringsperiode</dt><dd>{{ r.company.reporting_period }}</dd></div>{% endif %}
+      {% if r.gir_version %}<div><dt>GIR-version</dt><dd>{{ r.gir_version }}</dd></div>{% endif %}
+      <div><dt>Lag kørt</dt><dd>{{ r.layers_run|join(', ') }}</dd></div>
     </dl>
 
-    <!-- Fund -->
     {% if r.blocked_at_layer %}
-    <p class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+    <div class="status-banner status-invalid" style="padding:14px 18px; border-radius:10px; margin-top:8px;">
       Valideringen blev stoppet ved lag {{ r.blocked_at_layer }} — dybere kontroller giver ikke mening på en fil med denne fejl.
-    </p>
+    </div>
     {% endif %}
 
+    <!-- Fund pr. lag -->
     {% for g in r.groups %}
-    <section class="mt-6">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        Lag {{ g.layer_id }} · {{ g.layer_label }}
-      </h2>
-      <ul class="mt-2 space-y-3">
+    <div class="section-card" style="margin-top:18px;">
+      <div class="section-header section-header-info" style="cursor:default;">
+        <span class="section-name">Lag {{ g.layer_id }} · {{ g.layer_label }}</span>
+        <span class="section-counts">{{ g.findings|length }} fund</span>
+      </div>
+      <div class="section-body" style="display:block; padding:8px 16px 16px;">
         {% for f in g.findings %}
-        <li class="rounded-lg border bg-white p-4">
-          <div class="flex items-center justify-between gap-3">
-            <span class="font-medium">{{ f.name_da }}</span>
-            <span class="rounded px-2 py-0.5 text-xs font-medium text-white" style="background: {{ f.severity_color }}">
-              {{ f.severity_label }}
-            </span>
+        <div class="issue">
+          <div class="issue-header">
+            <span class="issue-badge" style="background:{{ f.severity_color }}; color:#fff;">{{ f.severity_label }}</span>
+            {% if f.rule_id %}<span class="rule-id">{{ f.rule_id }}</span>{% endif %}
+            <span class="issue-title">{{ f.name_da }}</span>
           </div>
-          <p class="mt-1 text-sm text-slate-700">{{ f.message_da }}</p>
+          <p class="issue-message">{{ f.message_da }}</p>
           {% if f.suggested_fix_da %}
-          <p class="mt-1 text-sm text-slate-500"><span class="font-medium">Forslag:</span> {{ f.suggested_fix_da }}</p>
+          <div class="issue-location"><span class="loc-meta">Forslag:</span> {{ f.suggested_fix_da }}</div>
           {% endif %}
           {% if f.location %}
-          <p class="mt-1 text-xs text-slate-400">
-            {% if f.location.line %}Linje {{ f.location.line }}{% endif %}
-            {% if f.location.element_id %} · {{ f.location.element_id }}{% endif %}
-            {% if f.location.xpath %} · {{ f.location.xpath }}{% endif %}
-          </p>
+          <div class="issue-location">
+            {% if f.location.line %}<span class="loc-meta">Linje {{ f.location.line }}</span>{% endif %}
+            {% if f.location.element_id %}<span class="loc-meta">id {{ f.location.element_id }}</span>{% endif %}
+            {% if f.location.xpath %}<span class="loc-xpath">{{ f.location.xpath }}</span>{% endif %}
+          </div>
           {% endif %}
-        </li>
+        </div>
         {% endfor %}
-      </ul>
-    </section>
+      </div>
+    </div>
     {% else %}
-    <p class="mt-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
+    <div class="status-banner status-valid" style="padding:14px 18px; border-radius:10px; margin-top:18px;">
       Ingen fund i de aktive kontroller (lag {{ r.layers_run|join(', ') }}).
-    </p>
+    </div>
     {% endfor %}
 
-    <p class="mt-8 text-xs text-slate-400">
-      Regelkatalog v{{ r.catalog_version }} · Pillar II GIR-Validator (Fase 1: lag 1-2 aktive).
+    <p style="margin-top:28px; font-size:12px; color:#9ca3af;">
+      Regelkatalog v{{ r.catalog_version }} · Pillar II GIR-Validator
     </p>
-  </main>
+  </div>
+
+  <footer class="site-footer">
+    <span>BALAI · Pillar II GIR-Validator — research preview</span>
+    <a href="https://www.balai.dk">balai.dk</a>
+  </footer>
 </body>
 </html>
