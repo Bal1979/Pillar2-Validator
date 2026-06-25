@@ -1,0 +1,11 @@
+{
+  "_comment": "Provenance for OECD-skemaet. Vedligeholdes af tools/sync_oecd_schemas.py — rediger ikke i haanden.",
+  "source_url": "lokal fil: /Users/bal/Downloads/xml-schema-gir-status-message.zip",
+  "downloaded_at": "2026-06-24T21:58:13Z",
+  "zip_sha256": "55a5e624a740131ef9c3dc711d75c2c5b4316f3456fd589ae2ea782ccfa6fa3d",
+  "file_count": 2,
+  "files": [
+    "GIRStatusMessageXML_v1.0.xsd",
+    "isocsmtypes_v1.1.xsd"
+  ]
+}

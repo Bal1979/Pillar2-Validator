@@ -1,0 +1,106 @@
+{
+ "_comment": "OECD juni-2026-guidance: 14 kendte issues i GIR-skemaet/valideringsreglerne for første filing-cyklus, med foreskrevne workarounds. Til pipeline-lag 5: (a) anerkend workarounds som gyldige, (b) fyr IKKE regler markeret switched_off i kataloget. Kurateret fra guidance-PDF (juni 2026).",
+ "source": "Guidance on the Use of the GIR XML Schema and Validation Rules for First GIR Filings (juni 2026)",
+ "approved": "2026-06-03",
+ "count": 14,
+ "issues": [
+  {
+   "issue": 1,
+   "title": "Point 3.1.6 “Adjusted Covered Taxes”",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 1. In the JurWithTaxingRights section of the GIR XML Schema (GLOBEBody/JurisdictionSection/JurWithTaxingRights/ReportDifference/AdjCoveredTaxDifference), there is currently no element corresponding point 3.1.6 (i.e. “Adjusted Covered Taxes”) of the GIR template, although it does contain the four sub-elements under it. Practical instructions and guidance 2. In order to address this issue, the four sub-elements under GLOBEBody/JurisdictionSection/JurWithTaxingRights/ReportDifference/AdjCoveredTaxDifference (i.e. AggCurrentTaxExpense, QRTCExpense, OtherTaxCredits, and Def"
+  },
+  {
+   "issue": 2,
+   "title": "Absence of Article 7.1.2 GloBE Losses incurred by a UPE that is a Flow-",
+   "affected_rule": null,
+   "uses_additional_data_point": true,
+   "instruction": "through Entity Description of the issue 3. Under the UPE Adjustments section of the GIR XML Schema, the Basis element indicates the basis for the adjustment, i.e. Article 7.1.1, Article 7.1.2, Article 7.2.1 or Article 7.2.2, together with the relevant subparagraph letter and number. In the enumeration, the option that corresponds to “Article 7.1.2”’ (i.e. GloBE Losses incurred by a UPE that is a Flow-through Entity) is currently not present in the GIR XML Schema. 4. The requirement field for this data element is validation, which means that it is a mandatory field and cannot be left blank. Pra"
+  },
+  {
+   "issue": 3,
+   "title": "Absence of Jurisdiction element in UTPRAttribution",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 9. The UTPR Attribution in the GIR is part of Section 3 which should be completed on a jurisdictional basis. In the GIR XML Schema, under the UTPRAttribution element, there is presently no Jurisdiction element. In practice this means that the GIR XML Schema does allow to indicate to which jurisdictions UTPR taxing rights are allocated, but it does not allow to indicate in respect of which low-tax jurisdictions a top-up tax under the UTPR was generated. This information is, however, available in the jurisdictional section containing the top-up tax calculations. Practica"
+  },
+  {
+   "issue": 4,
+   "title": "Absence of element corresponding to GIR 3.2.3.1.b.1",
+   "affected_rule": null,
+   "uses_additional_data_point": true,
+   "instruction": "Description of the issue 11. An element that corresponds to 3.2.3.1.b.1 of the GIR is currently not present in the GIR XML Schema (i.e. inclusion of equity gain or loss with respect to an Equity Investment Inclusion election) under GloBEBody/JurisdictionSection/GloBETax/ETR/Election/Art3.2.1.c. 6 Practical instructions and guidance 12. Where such information is to be filed, it should be reported as an Additional data point under the path GloBEBody/JurisdictionSection/AdditionalDataPoint. 13. The Description element should include “ADT2 EquityGain” and the relevant equity gain or loss that is "
+  },
+  {
+   "issue": 5,
+   "title": "Covered Taxes of the CE",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 15. Under the AdjustedIncomeTax section, GIR element 3.2.4.2.b.8 (corresponding to the Covered Taxes of the CE (or member of JV Group) after the adjustment) is currently not present, and element 3.2.4.2.a.2 (current tax expense at the CE level) is currently dislocated within the GIR XML Schema. In its current version, the GIR XML Schema User Guide provides that the Total element indicates the current tax expense with respect to Covered Taxes after the cross-allocation. However, the total amount of taxes after cross allocation should indeed include current and deferred "
+  },
+  {
+   "issue": 6,
+   "title": "absence of element corresponding to 3.2.4.3.2.c",
+   "affected_rule": null,
+   "uses_additional_data_point": true,
+   "instruction": "Description of the issue 17. Under the path GloBEBody/JurisdictionSection/GloBETax/ETR/ETRStatus/ETRComputation /CEComputation/Elections/Art4.4.7, an element that corresponds to the row 3.2.4.3.2.c of GIR Template (Unclaimed Accrual Annual Election) is currently not present in the GIR XML Schema. There are two elections under Article 4.4.7 (Unclaimed Accrual Annual Election and Unclaimed Accrual Five-Year Election). However, only the element corresponding to Unclaimed Accrual Five-Year Election is contained in the schema. Practical instructions and guidance 18. The existing Art.4.4.7 element m"
+  },
+  {
+   "issue": 7,
+   "title": "Completion of additional sub-elements not required under the GIR",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 21. According to the GIR Guidelines (Note 2.2.1), where a safe harbour reduces the top-up tax to zero, the Filing Constituent Entity is generally not required to complete Section 3 of the GIR. Nevertheless, according to the exceptions under Note 2.2.1.1.1, where certain safe harbour options apply (for example the routine profits test), the Filing Constituent Entity is generally only required to complete Section 3.3.2 (Substance-based Income Exclusion - SBIE). Within the current XML Schema structure, the SBIE corresponds to the element GlobeBody/JurisdictionSection/Glob"
+  },
+  {
+   "issue": 8,
+   "title": "Validation rule 60025",
+   "affected_rule": "60025",
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 23. Under validation rule 60025, the element ETRRate must equal to the result of the following: AdjustedCoveredTax/Total NetGlobeIncome/Total 24. According to the GIR XML Schema, the element ETRRate (GlobeBody/JurisdictionSection /GloBETax/ETR/ETRStatus/ETRComputation/OverallComputation/ETRRate) must be expressed as a value between 0 and 1. However, the above calculation may result in a value below 0 or above 1. As a result, the calculated value may not be permitted under the constraints applicable to the ETRRate element in the current GIR XML Schema. Practical instruc"
+  },
+  {
+   "issue": 9,
+   "title": "Validation rule 60026",
+   "affected_rule": "60026",
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 26. Under validation rule 60026, the element TopUpTax must equal the result of the following calculation: (TopUpTaxPercentage × ExcessProfits) + (AdditionalTopUpTax amounts) − QDMTT Amount 27. According to the GIR Status Message XML Schema and User Guide, calculation-based validation rules allow rounding of values (up to four decimals) with a tolerance margin of 1%. However, where the TopUpTax Percentage is very small, rounding to four decimals may lead to a result that exceeds the 1% tolerance margin. Practical instructions and guidance 28. Validation rule 60026 shoul"
+  },
+  {
+   "issue": 10,
+   "title": "Validation rule 70092",
+   "affected_rule": "70092",
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 29. Under validation rule 70092, the element AdditionalTopUpTax is the result of the following calculation: 𝐸𝑥𝑝𝑒𝑐𝑡𝑒𝑑𝐴𝑑𝑗𝑢𝑠𝑡𝑒𝑑𝐶𝑜𝑣𝑒𝑟𝑒𝑑𝑇𝑎𝑥 − 𝐴𝑑𝑗𝑢𝑠𝑡𝑒𝑑𝐶𝑜𝑣𝑒𝑟𝑒𝑑𝑇𝑎𝑥 where if the result is less than 0, the AdditionalTopUpTax (GLOBEBody/JurisdictionSection/GLOBETax /ETR/ETRStatus/ETRComputation/OverallComputation/AdditionalTopUpTax) must be 0. 30. Under Article 4.1.5, an additional Top-up Tax may arise and the MNE Group may elect the negative tax expense election. This may result in no Top-up Tax. Completion of the Article 4.1.5 section may trigger 10  validation rule 70092 and "
+  },
+  {
+   "issue": 11,
+   "title": "Validation rule 70028",
+   "affected_rule": "70028",
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 32. Under validation rule 70028, the declaration of a CE (Constituent Entity) ownership percentage of 0% is not permitted. 33. In certain cases, the ownership percentage of an entity may be a very small fraction which, after rounding, results in a value of 0% (e.g. 0.001). As a result, validation rule 70028 may prevent the reporting of ownership percentages that, after rounding equal 0%. Practical instructions and guidance 34. Validation rule 70028 should not be applied."
+  },
+  {
+   "issue": 12,
+   "title": "UTPR Safe Harbour",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 35. The UTPRSafeHarbour element under LowTaxJurisdiction/UTPR/UTPRSafeHarbour is redundant with element JurisdictionSection/ETR/ETRStatus/ETRException /UTPRSafeHarbour. Practical instructions and guidance 36. Element JurisdictionSection/ETR/ETRStatus/ETRException/ UTPRSafeHarbour shall be filled, and element LowTaxJurisdiction/UTPR/UTPRSafeHarbour shall be left blank."
+  },
+  {
+   "issue": 13,
+   "title": "Constituent Entity Deferred Taxes Recast",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 37. The element Recast is wrongly located in the XML schema. It should not be included within the DeferTaxAdjustAmt/Adjustment element. The Recast element should instead be included within the DeferTaxAdjustAmt element. Currently, reporting Recast in the Constituent Entity Computation requires completing the mandatory elements within the Adjustment element, i.e. AdjustmentItem and Amount. Practical instructions and guidance 38. In case the Recast is to be completed for a Constituent Entity, then the AdjustmentItem item shall include GIR2516 – Deferred tax adjustment re"
+  },
+  {
+   "issue": 14,
+   "title": "Percentages outside of the pre-established interval",
+   "affected_rule": null,
+   "uses_additional_data_point": false,
+   "instruction": "Description of the issue 39. In some instances, calculated percentages may lie outside of a pre-established interval and may therefore be below 0% or above 100%. Practical instructions and guidance 40. Where the percentage is a negative value (and the XSD does not permit negative values), the value reported should be zero (0). Where the percentage exceeds 100% (and the maximum value permitted under the XSD is 100, or 1), a value of 100 (or 1) shall be reported."
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+# Læg projektroden på sys.path, så "validator" og "app" kan importeres, uanset
+# om testene køres med `pytest` eller `python -m pytest`.
+pythonpath = ["."]
+testpaths = ["tests"]

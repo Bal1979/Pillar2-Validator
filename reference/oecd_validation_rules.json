@@ -1,0 +1,1911 @@
+{
+  "_comment": "EKSEKVERBARE OECD GIR-valideringsregler (lag 3 file-level / lag 4 record-level). Den FULDE officielle regelliste (163 regler) ligger i oecd_validation_rules_catalogue.json; denne fil er den delmængde, motoren faktisk kan evaluere endnu. 'oecd_rule' = bekræftet nummer fra Status Message User Guide Part 4; null = verificeret semantik, nummer ikke entydigt fastlagt. Regler i kataloget markeret switched_off_2026 fyres ALDRIG (juni-2026-guidance). Vedligeholdes/valideres af tools/sync_oecd_rules.py.",
+  "version": "0.2.0",
+  "released": "2026-06-25",
+  "catalogue_ref": "oecd_validation_rules_catalogue.json",
+  "namespaces": {
+    "globe": "urn:oecd:ties:globe:v2",
+    "stf": "urn:oecd:ties:globestf:v5",
+    "iso": "urn:oecd:ties:isoglobetypes:v1"
+  },
+  "rules": [
+    {
+      "id": "OECD-DOCREFID-UNIQUE",
+      "oecd_rule": "60007",
+      "level": "file",
+      "name_da": "DocRefId skal være unik",
+      "check": {
+        "type": "unique",
+        "xpath": "//stf:DocRefId"
+      },
+      "message_da": "DocRefId '{value}' optræder mere end én gang. Hver DocRefId skal være entydig i beskeden.",
+      "fix_da": "Tildel hver DocSpec en unik DocRefId.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60007 (DocRefID allerede brugt)"
+    },
+    {
+      "id": "OECD-CORR-REQUIRED",
+      "oecd_rule": "60015",
+      "level": "file",
+      "name_da": "CorrDocRefId kræves ved rettelse/sletning",
+      "check": {
+        "type": "required_if",
+        "container": "//globe:DocSpec",
+        "when": "stf:DocTypeIndic",
+        "when_in": [
+          "OECD2",
+          "OECD3",
+          "OECD12",
+          "OECD13"
+        ],
+        "require": "stf:CorrDocRefId"
+      },
+      "message_da": "DocTypeIndic '{when_value}' angiver rettelse/sletning, men CorrDocRefId mangler.",
+      "fix_da": "Tilføj CorrDocRefId, der peger på det dokument, rettelsen/sletningen vedrører.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60015 (OECD2/3 uden CorrDocRefId)"
+    },
+    {
+      "id": "OECD-CORR-FORBIDDEN",
+      "oecd_rule": "60012",
+      "level": "file",
+      "name_da": "CorrDocRefId må ikke angives ved ny data",
+      "check": {
+        "type": "forbidden_if",
+        "container": "//globe:DocSpec",
+        "when": "stf:DocTypeIndic",
+        "when_in": [
+          "OECD0",
+          "OECD1",
+          "OECD10",
+          "OECD11"
+        ],
+        "forbid": "stf:CorrDocRefId"
+      },
+      "message_da": "DocTypeIndic '{when_value}' angiver ny data, men CorrDocRefId er angivet. CorrDocRefId må kun bruges ved rettelse (OECD2) eller sletning (OECD3).",
+      "fix_da": "Fjern CorrDocRefId, eller ret DocTypeIndic til OECD2/OECD3 hvis der er tale om en rettelse.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60012 (OECD1/OECD0 → CorrDocRefId udeladt)"
+    },
+    {
+      "id": "OECD-NO-MIX-NEW-CORR",
+      "oecd_rule": "60004",
+      "level": "file",
+      "name_da": "Ny data og rettelser må ikke blandes",
+      "check": {
+        "type": "mutually_exclusive",
+        "xpath": "//stf:DocTypeIndic",
+        "group_a": [
+          "OECD1"
+        ],
+        "group_b": [
+          "OECD2",
+          "OECD3"
+        ]
+      },
+      "message_da": "Beskeden blander ny data (OECD1) og rettelser/sletninger (OECD2/OECD3). En besked må kun indeholde det ene.",
+      "fix_da": "Send ny data og rettelser i hver sin besked.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60004"
+    },
+    {
+      "id": "OECD-CORRDOCREFID-UNIQUE",
+      "oecd_rule": "60006",
+      "level": "file",
+      "name_da": "Samme dokument må ikke rettes/slettes to gange",
+      "check": {
+        "type": "unique",
+        "xpath": "//stf:CorrDocRefId"
+      },
+      "message_da": "CorrDocRefId '{value}' bruges mere end én gang. Samme DocRefID kan ikke rettes eller slettes to gange i samme besked.",
+      "fix_da": "Saml rettelser til samme dokument i én korrektion.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60006"
+    },
+    {
+      "id": "OECD-TIN-NOTIN-GIR3004",
+      "oecd_rule": "70001",
+      "level": "record",
+      "name_da": "NOTIN-TIN skal udfyldes korrekt",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:TIN",
+        "when": [
+          {
+            "path": "@TypeOfTIN",
+            "op": "in",
+            "value": [
+              "GIR3004"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".",
+            "op": "contains",
+            "value": "NOTIN"
+          },
+          {
+            "path": "@unknown",
+            "op": "in",
+            "value": [
+              "true",
+              "1"
+            ]
+          },
+          {
+            "path": "@issuedBy",
+            "op": "absent"
+          }
+        ]
+      },
+      "message_da": "Når TypeOfTIN er GIR3004, skal TIN indeholde 'NOTIN', have Unknown=true og ikke have issuedBy.",
+      "fix_da": "Ret TIN: tekst 'NOTIN', attribut unknown='true', og fjern issuedBy.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70001"
+    },
+    {
+      "id": "OECD-NOTIN-REQUIRES-GIR3004",
+      "oecd_rule": "70002",
+      "level": "record",
+      "name_da": "TIN='NOTIN' kræver TypeOfTIN=GIR3004",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:TIN",
+        "when": [
+          {
+            "path": ".",
+            "op": "equals",
+            "value": "NOTIN"
+          }
+        ],
+        "then": [
+          {
+            "path": "@TypeOfTIN",
+            "op": "equals",
+            "value": "GIR3004"
+          }
+        ]
+      },
+      "message_da": "Når TIN-værdien er 'NOTIN', skal TypeOfTIN være GIR3004.",
+      "fix_da": "Sæt TypeOfTIN til GIR3004 for TIN-elementer med værdien 'NOTIN'.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70002"
+    },
+    {
+      "id": "OECD-PERIOD-START-END",
+      "oecd_rule": "60020",
+      "level": "file",
+      "name_da": "Periodens startdato må ikke ligge efter slutdato",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:Period",
+        "left": "globe:Start",
+        "right": "globe:End",
+        "op": "le",
+        "as": "date"
+      },
+      "message_da": "Periodens startdato ({left}) ligger efter slutdatoen ({right}).",
+      "fix_da": "Ret Start- og End-datoerne, så Start ≤ End.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60020"
+    },
+    {
+      "id": "OECD-PERIOD-END-VS-HEADER",
+      "oecd_rule": "60021",
+      "level": "file",
+      "name_da": "Periodens slutdato må ikke ligge efter rapporteringsperioden",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:Period",
+        "left": "globe:End",
+        "right": "//globe:MessageSpec/globe:ReportingPeriod",
+        "op": "le",
+        "as": "date"
+      },
+      "message_da": "Periodens slutdato ({left}) ligger efter rapporteringsperioden i beskedhovedet ({right}).",
+      "fix_da": "Ret Period/End eller MessageSpec/ReportingPeriod, så End ≤ ReportingPeriod.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60021"
+    },
+    {
+      "id": "OECD-FILINGCE-RESCOUNTRY",
+      "oecd_rule": "60023",
+      "level": "file",
+      "name_da": "FilingCE's land skal matche afsenderlandet",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:FilingCE",
+        "left": "globe:ResCountryCode",
+        "right": "//globe:MessageSpec/globe:TransmittingCountry",
+        "op": "eq"
+      },
+      "message_da": "FilingCE's ResCountryCode ({left}) matcher ikke TransmittingCountry ({right}).",
+      "fix_da": "Sørg for at FilingCE's ResCountryCode er lig med TransmittingCountry.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60023"
+    },
+    {
+      "id": "OECD-TIN-UNKNOWN-NOTIN",
+      "oecd_rule": "70003",
+      "level": "record",
+      "name_da": "Unknown-TIN skal udfyldes korrekt",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:TIN",
+        "when": [
+          {
+            "path": "@unknown",
+            "op": "in",
+            "value": [
+              "true",
+              "1"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".",
+            "op": "contains",
+            "value": "NOTIN"
+          },
+          {
+            "path": "@TypeOfTIN",
+            "op": "equals",
+            "value": "GIR3004"
+          },
+          {
+            "path": "@issuedBy",
+            "op": "absent"
+          }
+        ]
+      },
+      "message_da": "Når Unknown er true, skal TIN indeholde 'NOTIN', have TypeOfTIN=GIR3004 og ingen issuedBy.",
+      "fix_da": "Ret TIN: 'NOTIN', TypeOfTIN=GIR3004, fjern issuedBy.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70003"
+    },
+    {
+      "id": "OECD-TIN-ISSUEDBY-REQUIRED",
+      "oecd_rule": "70005",
+      "level": "record",
+      "name_da": "issuedBy kræves for almindelige TIN",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:TIN",
+        "when": [
+          {
+            "path": "@TypeOfTIN",
+            "op": "not_in",
+            "value": [
+              "GIR3003",
+              "GIR3004"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "@issuedBy",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "TIN med TypeOfTIN uden for GIR3003/GIR3004 skal have attributten issuedBy.",
+      "fix_da": "Tilføj issuedBy (udstedende jurisdiktion) til TIN.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70005"
+    },
+    {
+      "id": "OECD-GLOBESTATUS-313-314",
+      "oecd_rule": "70013",
+      "level": "record",
+      "name_da": "GIR313 og GIR314 udelukker hinanden (samme CE)",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE/globe:ID",
+        "when": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR313"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "not_in",
+            "value": [
+              "GIR314"
+            ]
+          }
+        ]
+      },
+      "message_da": "Samme CE har både GloBEStatus GIR313 og GIR314, hvilket ikke er tilladt.",
+      "fix_da": "Fjern enten GIR313 eller GIR314 for denne CE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70013"
+    },
+    {
+      "id": "OECD-GLOBESTATUS-307-308",
+      "oecd_rule": "70014",
+      "level": "record",
+      "name_da": "GIR307 og GIR308 udelukker hinanden (samme CE)",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE/globe:ID",
+        "when": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR307"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "not_in",
+            "value": [
+              "GIR308"
+            ]
+          }
+        ]
+      },
+      "message_da": "Samme CE har både GloBEStatus GIR307 og GIR308, hvilket ikke er tilladt.",
+      "fix_da": "Fjern enten GIR307 eller GIR308 for denne CE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70014"
+    },
+    {
+      "id": "OECD-GLOBESTATUS-305-306",
+      "oecd_rule": "70018",
+      "level": "record",
+      "name_da": "GIR305 og GIR306 udelukker hinanden (samme CE)",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE/globe:ID",
+        "when": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR305"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "not_in",
+            "value": [
+              "GIR306"
+            ]
+          }
+        ]
+      },
+      "message_da": "Samme CE har både GloBEStatus GIR305 og GIR306, hvilket ikke er tilladt.",
+      "fix_da": "Fjern enten GIR305 eller GIR306 for denne CE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70018"
+    },
+    {
+      "id": "OECD-CHANGEDATE-AFTER-START",
+      "oecd_rule": "70022",
+      "level": "record",
+      "name_da": "ChangeDate må ikke ligge før periodens start",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:OwnershipChange",
+        "left": "globe:ChangeDate",
+        "right": "//globe:Period/globe:Start",
+        "op": "ge",
+        "as": "date"
+      },
+      "message_da": "OwnershipChange/ChangeDate ({left}) ligger før periodens startdato ({right}).",
+      "fix_da": "Ret ChangeDate, så den ligger inden for rapporteringsperioden.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70022"
+    },
+    {
+      "id": "OECD-CHANGEDATE-BEFORE-END",
+      "oecd_rule": "70023",
+      "level": "record",
+      "name_da": "ChangeDate må ikke ligge efter periodens slutning",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:OwnershipChange",
+        "left": "globe:ChangeDate",
+        "right": "//globe:Period/globe:End",
+        "op": "le",
+        "as": "date"
+      },
+      "message_da": "OwnershipChange/ChangeDate ({left}) ligger efter periodens slutdato ({right}).",
+      "fix_da": "Ret ChangeDate, så den ligger inden for rapporteringsperioden.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70023"
+    },
+    {
+      "id": "OECD-ETRSTATUS-CONTENT",
+      "oecd_rule": "70044",
+      "level": "record",
+      "name_da": "ETRStatus skal indeholde ETRException eller ETRComputation",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:ETRStatus",
+        "when": [],
+        "then": [
+          {
+            "path": "globe:ETRException|globe:ETRComputation",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "ETRStatus er udfyldt, men indeholder hverken ETRException eller ETRComputation.",
+      "fix_da": "Tilføj enten ETRException eller ETRComputation under ETRStatus.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70044"
+    },
+    {
+      "id": "OECD-ENDAMOUNT-NONNEG",
+      "oecd_rule": "70073",
+      "level": "record",
+      "name_da": "EndAmount må ikke være negativ",
+      "check": {
+        "type": "value_range",
+        "xpath": ".//globe:EndAmount",
+        "min": 0
+      },
+      "message_da": "EndAmount er negativ ({value}), men må ikke være det.",
+      "fix_da": "Kontrollér beregningen af EndAmount (StartAmount − TotalDDT).",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70073"
+    },
+    {
+      "id": "OECD-UTPRCF-NONNEG",
+      "oecd_rule": "70104",
+      "level": "record",
+      "name_da": "UTPRTopUpTaxCarriedForward må ikke være negativ",
+      "check": {
+        "type": "value_range",
+        "xpath": ".//globe:UTPRTopUpTaxCarriedForward",
+        "min": 0
+      },
+      "message_da": "UTPRTopUpTaxCarriedForward er negativ ({value}), men må ikke være det.",
+      "fix_da": "Kontrollér beregningen af UTPRTopUpTaxCarriedForward.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70104"
+    },
+    {
+      "id": "OECD-ADDITIONS-NONNEG",
+      "oecd_rule": "70123",
+      "level": "record",
+      "name_da": "Additions må ikke være negativ",
+      "check": {
+        "type": "value_range",
+        "xpath": ".//globe:Additions",
+        "min": 0
+      },
+      "message_da": "Et Additions-element er negativt ({value}), men må ikke være det.",
+      "fix_da": "Additions skal være ≥ 0.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70123"
+    },
+    {
+      "id": "OECD-UPE-GLOBESTATUS-INVALID",
+      "oecd_rule": "70009",
+      "level": "record",
+      "name_da": "Ugyldig GlobeStatus for UPE",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:OtherUPE/globe:ID",
+        "when": [],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "not_in",
+            "value": [
+              "GIR305",
+              "GIR307",
+              "GIR308",
+              "GIR309",
+              "GIR312",
+              "GIR313",
+              "GIR314",
+              "GIR315",
+              "GIR317",
+              "GIR318"
+            ]
+          }
+        ]
+      },
+      "message_da": "UPE'ens GlobeStatus indeholder en værdi, der ikke er tilladt for en UPE.",
+      "fix_da": "Fjern den ugyldige GlobeStatus-værdi for UPE-elementet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70009"
+    },
+    {
+      "id": "OECD-UPE-RESCOUNTRY-ONE",
+      "oecd_rule": "70010",
+      "level": "record",
+      "name_da": "UPE må kun have ét ResCountryCode",
+      "check": {
+        "type": "cardinality",
+        "container": ".//globe:OtherUPE/globe:ID",
+        "path": "globe:ResCountryCode",
+        "max": 1
+      },
+      "message_da": "UPE/OtherUPE har mere end ét ResCountryCode ({count}); kun ét er tilladt.",
+      "fix_da": "Angiv præcis ét ResCountryCode for UPE'en.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70010"
+    },
+    {
+      "id": "OECD-CE-RESCOUNTRY-ONE",
+      "oecd_rule": "70011",
+      "level": "record",
+      "name_da": "CE må kun have ét ResCountryCode",
+      "check": {
+        "type": "cardinality",
+        "container": ".//globe:CE/globe:ID",
+        "path": "globe:ResCountryCode",
+        "max": 1
+      },
+      "message_da": "En CE har mere end ét ResCountryCode ({count}); kun ét er tilladt.",
+      "fix_da": "Angiv præcis ét ResCountryCode pr. CE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70011"
+    },
+    {
+      "id": "OECD-PREOWNERSHIP-GIR719",
+      "oecd_rule": "70024",
+      "level": "record",
+      "name_da": "PreOwnership må ikke udfyldes ved PreGlobeStatus GIR719",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:OwnershipChange",
+        "when": [
+          {
+            "path": "globe:PreGlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR719"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:PreOwnership",
+            "op": "absent"
+          }
+        ]
+      },
+      "message_da": "PreOwnership er udfyldt, men PreGlobeStatus er GIR719, hvor PreOwnership ikke må angives.",
+      "fix_da": "Fjern PreOwnership for denne OwnershipChange.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70024"
+    },
+    {
+      "id": "OECD-QIIR-RULES",
+      "oecd_rule": "70032",
+      "level": "record",
+      "name_da": "QIIR kræver CE-Rules GIR201 eller GIR202",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE",
+        "when": [
+          {
+            "path": "globe:QIIR",
+            "op": "present"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:ID/globe:Rules",
+            "op": "in",
+            "value": [
+              "GIR201",
+              "GIR202"
+            ]
+          }
+        ]
+      },
+      "message_da": "CE'en har et QIIR-element, men Rules indeholder hverken GIR201 eller GIR202.",
+      "fix_da": "Sørg for at CE'ens Rules indeholder GIR201 eller GIR202, når QIIR er angivet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70032"
+    },
+    {
+      "id": "OECD-PREOWNERSHIP-NOMINEE",
+      "oecd_rule": "70025",
+      "level": "record",
+      "name_da": "Nominee-PreOwnership kræver NOTIN-TIN",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:PreOwnership",
+        "when": [
+          {
+            "path": "globe:OwnershipType",
+            "op": "in",
+            "value": [
+              "GIR805",
+              "GIR806"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:TIN/@TypeOfTIN",
+            "op": "equals",
+            "value": "GIR3004"
+          },
+          {
+            "path": "globe:TIN",
+            "op": "contains",
+            "value": "NOTIN"
+          }
+        ]
+      },
+      "message_da": "PreOwnership med OwnershipType GIR805/GIR806 skal have TIN med TypeOfTIN=GIR3004 og værdien 'NOTIN'.",
+      "fix_da": "Sæt TIN til 'NOTIN' med TypeOfTIN=GIR3004 for denne PreOwnership.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70025"
+    },
+    {
+      "id": "OECD-OWNERSHIP-TIN-GIR801",
+      "oecd_rule": "70029",
+      "level": "record",
+      "name_da": "Ownership-TIN (GIR801) skal matche en rapporteret enheds-TIN",
+      "check": {
+        "type": "conditional_ref",
+        "container": ".//globe:Ownership",
+        "when": [
+          {
+            "path": "globe:OwnershipType",
+            "op": "in",
+            "value": [
+              "GIR801"
+            ]
+          }
+        ],
+        "source": "globe:TIN",
+        "target": "//globe:ID/globe:TIN"
+      },
+      "message_da": "Ownership/TIN '{value}' (OwnershipType GIR801) matcher ingen TIN rapporteret for en enhed i CorporateStructure.",
+      "fix_da": "Sørg for at Ownership/TIN svarer til en TIN, der er rapporteret for en UPE/CE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70029"
+    },
+    {
+      "id": "OECD-OWNERSHIP-TIN-GIR802-804",
+      "oecd_rule": "70030",
+      "level": "record",
+      "name_da": "Ownership-TIN (GIR802-804) skal matche en rapporteret enheds-TIN",
+      "check": {
+        "type": "conditional_ref",
+        "container": ".//globe:Ownership",
+        "when": [
+          {
+            "path": "globe:OwnershipType",
+            "op": "in",
+            "value": [
+              "GIR802",
+              "GIR803",
+              "GIR804"
+            ]
+          }
+        ],
+        "source": "globe:TIN",
+        "target": "//globe:ID/globe:TIN"
+      },
+      "message_da": "Ownership/TIN '{value}' (OwnershipType GIR802-804) matcher ingen rapporteret enheds-TIN.",
+      "fix_da": "Sørg for at Ownership/TIN svarer til en rapporteret enheds-TIN.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70030"
+    },
+    {
+      "id": "OECD-CALC-EXCESSPROFITS",
+      "oecd_rule": "70086",
+      "level": "record",
+      "name_da": "ExcessProfits-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:OverallComputation",
+        "target": "globe:ExcessProfits",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            "globe:NetGlobeIncome/globe:Total",
+            "globe:SubstanceExclusion/globe:Total"
+          ]
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): ExcessProfits = NetGlobeIncome/Total − SubstanceExclusion/Total.",
+      "fix_da": "Kontrollér ExcessProfits eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70086"
+    },
+    {
+      "id": "OECD-CALC-ENDAMOUNT",
+      "oecd_rule": "70072",
+      "level": "record",
+      "name_da": "EndAmount-beregning (DDT-recapture)",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:Recapture",
+        "target": "globe:EndAmount",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            "globe:StartAmount",
+            "globe:TotalDDT"
+          ]
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): EndAmount = StartAmount − TotalDDT.",
+      "fix_da": "Kontrollér EndAmount, StartAmount eller TotalDDT.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70072"
+    },
+    {
+      "id": "OECD-CALC-EXCESSNEG-REMAINING",
+      "oecd_rule": "70083",
+      "level": "record",
+      "name_da": "ExcessNegTaxExpense/Remaining-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:ExcessNegTaxExpense",
+        "target": "globe:Remaining",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:PriorYearBalance",
+                "globe:GeneratedInRFY"
+              ]
+            },
+            "globe:UtilizedInRFY"
+          ]
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): Remaining = PriorYearBalance + GeneratedInRFY − UtilizedInRFY.",
+      "fix_da": "Kontrollér Remaining eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70083"
+    },
+    {
+      "id": "OECD-CALC-UTPRCF",
+      "oecd_rule": "70105",
+      "level": "record",
+      "name_da": "UTPRTopUpTaxCarriedForward-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:Attribution",
+        "target": "globe:UTPRTopUpTaxCarriedForward",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:UTPRTopUpTaxCarryForward",
+                "globe:UTPRTopUpTaxAttributed"
+              ]
+            },
+            "globe:AddCashTaxExpense"
+          ]
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): UTPRTopUpTaxCarriedForward = UTPRTopUpTaxCarryForward + UTPRTopUpTaxAttributed − AddCashTaxExpense.",
+      "fix_da": "Kontrollér UTPRTopUpTaxCarriedForward eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70105"
+    },
+    {
+      "id": "OECD-CALC-IIR-TOPUPTAX",
+      "oecd_rule": "60027",
+      "level": "file",
+      "name_da": "IIR ParentEntity TopUpTax-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:ParentEntity",
+        "target": "globe:TopUpTax",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            "globe:TopUpTaxShare",
+            "globe:IIROffSet"
+          ]
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): TopUpTax = TopUpTaxShare − IIROffSet.",
+      "fix_da": "Kontrollér TopUpTax, TopUpTaxShare eller IIROffSet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60027"
+    },
+    {
+      "id": "OECD-CALC-TRANSBLENDCFC",
+      "oecd_rule": "70076",
+      "level": "record",
+      "name_da": "TransBlendCFC/Total-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:TransBlendCFC",
+        "target": "globe:Total",
+        "formula": {
+          "op": "sum_all",
+          "path": ".//globe:AggAllocTax"
+        }
+      },
+      "message_da": "Beregnet værdi ({computed}) afviger fra den rapporterede ({reported}): TransBlendCFC/Total = summen af alle AggAllocTax.",
+      "fix_da": "Kontrollér Total eller AggAllocTax-værdierne.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70076"
+    },
+    {
+      "id": "OECD-CALC-BEFRECAST",
+      "oecd_rule": "70078",
+      "level": "record",
+      "name_da": "BefRecastAdjust-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:DeferTaxAdjustAmt",
+        "target": "globe:BefRecastAdjust",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:DefTaxAmt",
+                "globe:GLoBEValue"
+              ]
+            },
+            "globe:DiffCarryValue"
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): BefRecastAdjust = DefTaxAmt − DiffCarryValue + GLoBEValue.",
+      "fix_da": "Kontrollér BefRecastAdjust eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70078"
+    },
+    {
+      "id": "OECD-CALC-PRERECAST",
+      "oecd_rule": "70079",
+      "level": "record",
+      "name_da": "PreRecast-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:DeferTaxAdjustAmt",
+        "target": "globe:PreRecast",
+        "formula": {
+          "op": "sum",
+          "operands": [
+            "globe:BefRecastAdjust",
+            "globe:TotalAdjust"
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): PreRecast = BefRecastAdjust + TotalAdjust.",
+      "fix_da": "Kontrollér PreRecast eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70079"
+    },
+    {
+      "id": "OECD-CALC-DEFERTAXASSET-TOTAL",
+      "oecd_rule": "70064",
+      "level": "record",
+      "name_da": "DeferTaxAsset/Total-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:DeferTaxAsset",
+        "target": "globe:Total",
+        "formula": {
+          "op": "sum_all",
+          "path": ".//globe:AmountAttributed"
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): DeferTaxAsset/Total = summen af alle AmountAttributed.",
+      "fix_da": "Kontrollér Total eller AmountAttributed-værdierne.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70064"
+    },
+    {
+      "id": "OECD-CALC-COVTAXREFUND-TOTAL",
+      "oecd_rule": "70065",
+      "level": "record",
+      "name_da": "CoveredTaxRefund/Total-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:CoveredTaxRefund",
+        "target": "globe:Total",
+        "formula": {
+          "op": "sum_all",
+          "path": ".//globe:AmountAttributed"
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): CoveredTaxRefund/Total = summen af alle AmountAttributed.",
+      "fix_da": "Kontrollér Total eller AmountAttributed-værdierne.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70065"
+    },
+    {
+      "id": "OECD-70108",
+      "oecd_rule": "70108",
+      "level": "record",
+      "name_da": "Basis kræver TaxRate",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1901",
+              "GIR1902",
+              "GIR1905",
+              "GIR1906"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:EntityOwner/globe:TaxRate | globe:IndOwners/globe:TaxRate",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1901/1902/1905/1906, skal EntityOwner/TaxRate eller IndOwners/TaxRate være udfyldt.",
+      "fix_da": "Tilføj TaxRate for ejeren.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70108"
+    },
+    {
+      "id": "OECD-70109",
+      "oecd_rule": "70109",
+      "level": "record",
+      "name_da": "Basis GIR1907 kræver IndOwners/ResCountryCode",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1907"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:IndOwners/globe:ResCountryCode",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1907, skal IndOwners/ResCountryCode være udfyldt.",
+      "fix_da": "Vælg IndOwners og angiv ResCountryCode.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70109"
+    },
+    {
+      "id": "OECD-70110",
+      "oecd_rule": "70110",
+      "level": "record",
+      "name_da": "Basis GIR1903/1908 kræver IndOwners",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1903",
+              "GIR1908"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:IndOwners",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1903 eller GIR1908, skal IndOwners være udfyldt.",
+      "fix_da": "Tilføj IndOwners-elementet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70110"
+    },
+    {
+      "id": "OECD-70111",
+      "oecd_rule": "70111",
+      "level": "record",
+      "name_da": "Basis GIR1904/1909 kræver EntityOwner/ExTypeOfEntity",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1904",
+              "GIR1909"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:EntityOwner/globe:ExTypeOfEntity",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1904 eller GIR1909, skal EntityOwner/ExTypeOfEntity være udfyldt.",
+      "fix_da": "Vælg EntityOwner og angiv ExTypeOfEntity.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70111"
+    },
+    {
+      "id": "OECD-70112",
+      "oecd_rule": "70112",
+      "level": "record",
+      "name_da": "Basis GIR1904 udelukker ExTypeOfEntity GIR2805",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1904"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:EntityOwner/globe:ExTypeOfEntity",
+            "op": "not_in",
+            "value": [
+              "GIR2805"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1904, må ExTypeOfEntity ikke være GIR2805.",
+      "fix_da": "Ret ExTypeOfEntity-værdien.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70112"
+    },
+    {
+      "id": "OECD-70113",
+      "oecd_rule": "70113",
+      "level": "record",
+      "name_da": "Basis GIR1909 udelukker ExTypeOfEntity GIR2804",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:Basis]",
+        "when": [
+          {
+            "path": "globe:Basis",
+            "op": "in",
+            "value": [
+              "GIR1909"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:EntityOwner/globe:ExTypeOfEntity",
+            "op": "not_in",
+            "value": [
+              "GIR2804"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når Basis er GIR1909, må ExTypeOfEntity ikke være GIR2804.",
+      "fix_da": "Ret ExTypeOfEntity-værdien.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70113"
+    },
+    {
+      "id": "OECD-70060",
+      "oecd_rule": "70060",
+      "level": "record",
+      "name_da": "AdjustmentItem GIR2025 kræver IntShippingIncome",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:NetGlobeIncome",
+        "when": [
+          {
+            "path": ".//globe:AdjustmentItem",
+            "op": "in",
+            "value": [
+              "GIR2025"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:IntShippingIncome",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når AdjustmentItem indeholder GIR2025, skal IntShippingIncome være udfyldt.",
+      "fix_da": "Tilføj IntShippingIncome-elementet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70060"
+    },
+    {
+      "id": "OECD-70107",
+      "oecd_rule": "70107",
+      "level": "record",
+      "name_da": "Exception=TRUE udelukker CrossBorderAdjustments",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CEComputation",
+        "when": [
+          {
+            "path": ".//globe:Exception",
+            "op": "in",
+            "value": [
+              "true",
+              "1"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:CrossBorderAdjustments",
+            "op": "absent"
+          }
+        ]
+      },
+      "message_da": "Når Exception er TRUE, må CrossBorderAdjustments ikke angives for den CEComputation.",
+      "fix_da": "Fjern CrossBorderAdjustments for denne CEComputation.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70107"
+    },
+    {
+      "id": "OECD-70082",
+      "oecd_rule": "70082",
+      "level": "record",
+      "name_da": "DeferredTaxAssets kræver Start eller Recast = 0",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:DeferredTaxAssets",
+        "when": [],
+        "then": [
+          {
+            "path": "globe:DeferredTaxAssetStart | globe:DeferredTaxAssetRecast",
+            "op": "in",
+            "value": [
+              "0"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når DeferredTaxAssets er angivet, skal DeferredTaxAssetStart eller DeferredTaxAssetRecast indeholde værdien 0.",
+      "fix_da": "Sæt en af dem til 0.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70082"
+    },
+    {
+      "id": "OECD-70045",
+      "oecd_rule": "70045",
+      "level": "record",
+      "name_da": "SafeHarbour GIR1203-1205 kræver TransitionalCbCRSafeHarbour",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1203",
+              "GIR1204",
+              "GIR1205"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:TransitionalCbCRSafeHarbour",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når SafeHarbour er GIR1203/1204/1205, skal TransitionalCbCRSafeHarbour være udfyldt.",
+      "fix_da": "Tilføj TransitionalCbCRSafeHarbour for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70045"
+    },
+    {
+      "id": "OECD-70047",
+      "oecd_rule": "70047",
+      "level": "record",
+      "name_da": "SafeHarbour GIR1203 kræver Revenue",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1203"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:Revenue",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når SafeHarbour er GIR1203, skal Revenue være udfyldt.",
+      "fix_da": "Tilføj Revenue for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70047"
+    },
+    {
+      "id": "OECD-70048",
+      "oecd_rule": "70048",
+      "level": "record",
+      "name_da": "SafeHarbour GIR1204 kræver IncomeTax",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1204"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:IncomeTax",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når SafeHarbour er GIR1204, skal IncomeTax være udfyldt.",
+      "fix_da": "Tilføj IncomeTax for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70048"
+    },
+    {
+      "id": "OECD-70049",
+      "oecd_rule": "70049",
+      "level": "record",
+      "name_da": "SafeHarbour GIR1206 kræver UTPRSafeHarbour",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1206"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:UTPRSafeHarbour",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når SafeHarbour er GIR1206, skal UTPRSafeHarbour være udfyldt.",
+      "fix_da": "Tilføj UTPRSafeHarbour for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70049"
+    },
+    {
+      "id": "OECD-70051",
+      "oecd_rule": "70051",
+      "level": "record",
+      "name_da": "SafeHarbour GIR1208 kræver AggregateSimplified",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1208"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:AggregateSimplified",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når SafeHarbour er GIR1208, skal AggregateSimplified være udfyldt.",
+      "fix_da": "Tilføj AggregateSimplified for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70051"
+    },
+    {
+      "id": "OECD-70041",
+      "oecd_rule": "70041",
+      "level": "file",
+      "name_da": "CFSofUPE GIR502/504 udelukker SafeHarbour GIR1207-1209",
+      "check": {
+        "type": "conditional",
+        "container": ".",
+        "when": [
+          {
+            "path": ".//globe:CFSofUPE",
+            "op": "in",
+            "value": [
+              "GIR502",
+              "GIR504"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:SafeHarbour",
+            "op": "not_in",
+            "value": [
+              "GIR1207",
+              "GIR1208",
+              "GIR1209"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når FilingInfo CFSofUPE er GIR502 eller GIR504, må SafeHarbour ikke være GIR1207/1208/1209.",
+      "fix_da": "Ret SafeHarbour-værdien eller CFSofUPE.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70041"
+    },
+    {
+      "id": "OECD-70016",
+      "oecd_rule": "70016",
+      "level": "record",
+      "name_da": "GlobeStatus GIR307 kræver GIR309",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE/globe:ID",
+        "when": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR307"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR309"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når en CE har GlobeStatus GIR307, skal GIR309 også rapporteres for samme CE.",
+      "fix_da": "Tilføj GIR309 til CE'ens GlobeStatus.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70016"
+    },
+    {
+      "id": "OECD-70017",
+      "oecd_rule": "70017",
+      "level": "record",
+      "name_da": "GlobeStatus GIR308 kræver GIR309",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE/globe:ID",
+        "when": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR308"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR309"
+            ]
+          }
+        ]
+      },
+      "message_da": "Når en CE har GlobeStatus GIR308, skal GIR309 også rapporteres for samme CE.",
+      "fix_da": "Tilføj GIR309 til CE'ens GlobeStatus.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70017"
+    },
+    {
+      "id": "OECD-70026",
+      "oecd_rule": "70026",
+      "level": "record",
+      "name_da": "GlobeStatus GIR305 kræver 100% ejerskab",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE",
+        "when": [
+          {
+            "path": "globe:ID/globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR305"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Ownership/globe:OwnershipPercentage",
+            "op": "ge",
+            "value": "1"
+          }
+        ]
+      },
+      "message_da": "Når CE'ens GlobeStatus er GIR305, skal OwnershipPercentage være 100% (1,0).",
+      "fix_da": "Sæt OwnershipPercentage til 1.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70026"
+    },
+    {
+      "id": "OECD-70062",
+      "oecd_rule": "70062",
+      "level": "record",
+      "name_da": "AdjustmentItem GIR2720 udelukker negativ AdjustedCoveredTax",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:AdjustedCoveredTax",
+        "when": [
+          {
+            "path": ".//globe:AdjustmentItem",
+            "op": "in",
+            "value": [
+              "GIR2720"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Total",
+            "op": "ge",
+            "value": "0"
+          }
+        ]
+      },
+      "message_da": "Når AdjustmentItem er GIR2720, må AdjustedCoveredTax/Total ikke være negativ.",
+      "fix_da": "Kontrollér AdjustedCoveredTax/Total.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70062"
+    },
+    {
+      "id": "OECD-70088",
+      "oecd_rule": "70088",
+      "level": "record",
+      "name_da": "Negativ NetGlobeIncome kræver Art4.1.5",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:OverallComputation",
+        "when": [
+          {
+            "path": "globe:NetGlobeIncome/globe:Total",
+            "op": "lt",
+            "value": "0"
+          }
+        ],
+        "then": [
+          {
+            "path": ".//*[local-name()='Art4.1.5']",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når OverallComputation/NetGlobeIncome/Total er negativ, skal Art4.1.5 være udfyldt.",
+      "fix_da": "Tilføj Art4.1.5-elementet.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70088"
+    },
+    {
+      "id": "OECD-70101",
+      "oecd_rule": "70101",
+      "level": "record",
+      "name_da": "Employees kræves når UTPRTopUpTaxCarryForward ≠ 0",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:UTPRTopUpTaxCarryForward]",
+        "when": [
+          {
+            "path": "globe:UTPRTopUpTaxCarryForward",
+            "op": "not_in",
+            "value": [
+              "0"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Employees",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Employees skal udfyldes, medmindre UTPRTopUpTaxCarryForward er 0.",
+      "fix_da": "Tilføj Employees.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70101"
+    },
+    {
+      "id": "OECD-70102",
+      "oecd_rule": "70102",
+      "level": "record",
+      "name_da": "TangibleAssetValue kræves når UTPRTopUpTaxCarryForward ≠ 0",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:UTPRTopUpTaxCarryForward]",
+        "when": [
+          {
+            "path": "globe:UTPRTopUpTaxCarryForward",
+            "op": "not_in",
+            "value": [
+              "0"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:TangibleAssetValue",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "TangibleAssetValue skal udfyldes, medmindre UTPRTopUpTaxCarryForward er 0.",
+      "fix_da": "Tilføj TangibleAssetValue.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70102"
+    },
+    {
+      "id": "OECD-70103",
+      "oecd_rule": "70103",
+      "level": "record",
+      "name_da": "UTPRPercentage skal være 0 når carryforward > 0",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:UTPRTopUpTaxCarryForward]",
+        "when": [
+          {
+            "path": "globe:UTPRTopUpTaxCarryForward",
+            "op": "gt",
+            "value": "0"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:UTPRPercentage",
+            "op": "le",
+            "value": "0"
+          }
+        ]
+      },
+      "message_da": "Når UTPRTopUpTaxCarryForward er større end 0, skal UTPRPercentage være 0%.",
+      "fix_da": "Sæt UTPRPercentage til 0.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70103"
+    },
+    {
+      "id": "OECD-70115",
+      "oecd_rule": "70115",
+      "level": "record",
+      "name_da": "AdjustmentItem GIR2022/2023 kræver UPEAdjustments",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:Adjustment",
+        "when": [
+          {
+            "path": ".//globe:AdjustmentItem",
+            "op": "in",
+            "value": [
+              "GIR2022",
+              "GIR2023"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:UPEAdjustments",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Når AdjustmentItem er GIR2022 og/eller GIR2023, skal UPEAdjustments være udfyldt.",
+      "fix_da": "Tilføj UPEAdjustments.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70115"
+    },
+    {
+      "id": "OECD-60028",
+      "oecd_rule": "60028",
+      "level": "record",
+      "name_da": "AdjustedFANIL/Total-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:AdjustedFANIL",
+        "target": "globe:Total",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:FANIL",
+                {
+                  "op": "sum_all",
+                  "path": ".//globe:Additions"
+                }
+              ]
+            },
+            {
+              "op": "sum_all",
+              "path": ".//globe:Reductions"
+            }
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): Total = FANIL + Σ Additions − Σ Reductions.",
+      "fix_da": "Kontrollér AdjustedFANIL/Total eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60028"
+    },
+    {
+      "id": "OECD-70074",
+      "oecd_rule": "70074",
+      "level": "record",
+      "name_da": "TotalDDT-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:Recapture",
+        "target": "globe:TotalDDT",
+        "formula": {
+          "op": "sum",
+          "operands": [
+            ".//*[local-name()='DDTYear-0']",
+            ".//*[local-name()='DDTYear-1']",
+            ".//*[local-name()='DDTYear-2']",
+            ".//*[local-name()='DDTYear-3']"
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): TotalDDT = DDTYear-0 + DDTYear-1 + DDTYear-2 + DDTYear-3.",
+      "fix_da": "Kontrollér TotalDDT eller DDTYear-værdierne.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70074"
+    },
+    {
+      "id": "OECD-70077",
+      "oecd_rule": "70077",
+      "level": "record",
+      "name_da": "DeferTaxAdjustAmt/Total-beregning (Recast)",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:DeferTaxAdjustAmt",
+        "target": "globe:Total",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:PreRecast",
+                "globe:Recast/globe:Lower"
+              ]
+            },
+            "globe:Recast/globe:Higher"
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): Total = PreRecast + Recast/Lower − Recast/Higher.",
+      "fix_da": "Kontrollér Total eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70077"
+    },
+    {
+      "id": "OECD-70055",
+      "oecd_rule": "70055",
+      "level": "record",
+      "name_da": "OutstandingBalance-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//*[local-name()='Art3.2.1.c']",
+        "target": "globe:OutstandingBalance",
+        "formula": {
+          "op": "subtract",
+          "operands": [
+            {
+              "op": "sum",
+              "operands": [
+                "globe:QualOwnerIntentBalance",
+                "globe:Additions"
+              ]
+            },
+            "globe:Reductions"
+          ]
+        }
+      },
+      "message_da": "Beregnet ({computed}) afviger fra rapporteret ({reported}): OutstandingBalance = QualOwnerIntentBalance + Additions − Reductions.",
+      "fix_da": "Kontrollér OutstandingBalance eller de indgående beløb.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70055"
+    },
+    {
+      "id": "OECD-70059",
+      "oecd_rule": "70059",
+      "level": "record",
+      "name_da": "AdjustmentItem-kode kun én gang pr. ETR",
+      "check": {
+        "type": "unique_in",
+        "container": ".//globe:ETR",
+        "xpath": ".//globe:AdjustmentItem"
+      },
+      "message_da": "AdjustmentItem-koden '{value}' bruges mere end én gang inden for samme ETR.",
+      "fix_da": "Hver AdjustmentItem-kode må kun bruges én gang pr. ETR.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70059"
+    },
+    {
+      "id": "OECD-70067",
+      "oecd_rule": "70067",
+      "level": "record",
+      "name_da": "AmountAttributed-år skal være unikke",
+      "check": {
+        "type": "unique_in",
+        "container": ".//*[globe:AmountAttributed]",
+        "xpath": "globe:AmountAttributed/globe:Year"
+      },
+      "message_da": "Året '{value}' optræder for mere end én AmountAttributed; årene skal være forskellige.",
+      "fix_da": "Sørg for at hver AmountAttributed har et unikt år.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70067"
+    },
+    {
+      "id": "OECD-70090",
+      "oecd_rule": "70090",
+      "level": "record",
+      "name_da": "GlobeLoss skal svare til NetGlobeIncome/Total",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:OverallComputation",
+        "target": ".//*[local-name()='GlobeLoss']",
+        "formula": {
+          "op": "sum",
+          "operands": [
+            "globe:NetGlobeIncome/globe:Total"
+          ]
+        }
+      },
+      "message_da": "GlobeLoss ({reported}) er ikke lig OverallComputation/NetGlobeIncome/Total ({computed}).",
+      "fix_da": "Sæt GlobeLoss lig NetGlobeIncome/Total.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70090"
+    },
+    {
+      "id": "OECD-70124",
+      "oecd_rule": "70124",
+      "level": "record",
+      "name_da": "CrossAllocation/Reductions må ikke være positiv",
+      "check": {
+        "type": "value_range",
+        "xpath": ".//globe:CrossAllocation/globe:Reductions",
+        "max": 0
+      },
+      "message_da": "Et CrossAllocation/Reductions-element er positivt ({value}); det må det ikke være.",
+      "fix_da": "Reductions skal være ≤ 0.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70124"
+    },
+    {
+      "id": "OECD-70021",
+      "oecd_rule": "70021",
+      "level": "record",
+      "name_da": "GlobeStatus GIR316/318 kræver OwnershipChange",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE",
+        "when": [
+          {
+            "path": "globe:ID/globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR316",
+              "GIR318"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:OwnershipChange",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "GlobeStatus GIR316/GIR318 kræver en udfyldt OwnershipChange for CE'en.",
+      "fix_da": "Tilføj OwnershipChange, eller ret GlobeStatus.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70021"
+    },
+    {
+      "id": "OECD-70066",
+      "oecd_rule": "70066",
+      "level": "record",
+      "name_da": "DeferTaxAsset-år må ikke ligge efter periodens start",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:DeferTaxAsset/globe:AmountAttributed",
+        "left": "globe:Year",
+        "right": "//globe:Period/globe:Start",
+        "op": "le",
+        "as": "year"
+      },
+      "message_da": "AmountAttributed/Year ({left}) for DeferTaxAsset ligger efter periodens startår ({right}).",
+      "fix_da": "Året skal være ≤ periodens startår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70066"
+    },
+    {
+      "id": "OECD-70068",
+      "oecd_rule": "70068",
+      "level": "record",
+      "name_da": "CoveredTaxRefund-år må ikke ligge efter periodens start",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:CoveredTaxRefund/globe:AmountAttributed",
+        "left": "globe:Year",
+        "right": "//globe:Period/globe:Start",
+        "op": "le",
+        "as": "year"
+      },
+      "message_da": "AmountAttributed/Year ({left}) for CoveredTaxRefund ligger efter periodens startår ({right}).",
+      "fix_da": "Året skal være ≤ periodens startår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70068"
+    },
+    {
+      "id": "OECD-70070",
+      "oecd_rule": "70070",
+      "level": "record",
+      "name_da": "Recapture-år må ikke ligge efter periodens slut",
+      "check": {
+        "type": "compare",
+        "container": ".//globe:Recapture",
+        "left": "globe:Year",
+        "right": "//globe:Period/globe:End",
+        "op": "le",
+        "as": "year"
+      },
+      "message_da": "Recapture/Year ({left}) ligger efter periodens slutår ({right}).",
+      "fix_da": "Året må ikke ligge efter periodens slutår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70070"
+    },
+    {
+      "id": "OECD-70093",
+      "oecd_rule": "70093",
+      "level": "record",
+      "name_da": "NONArt4.1.5-år må ikke overstige periodens slut",
+      "check": {
+        "type": "compare",
+        "container": ".//*[local-name()='NONArt4.1.5']",
+        "left": "globe:Year",
+        "right": "//globe:Period/globe:End",
+        "op": "le",
+        "as": "year"
+      },
+      "message_da": "NONArt4.1.5/Year ({left}) er større end periodens slutår ({right}).",
+      "fix_da": "Året må ikke være større end periodens slutår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70093"
+    },
+    {
+      "id": "OECD-70015",
+      "oecd_rule": "70015",
+      "level": "file",
+      "name_da": "GIR308 kræver en tilsvarende GIR307-enhed",
+      "check": {
+        "type": "conditional",
+        "container": ".",
+        "when": [
+          {
+            "path": ".//globe:GlobeStatus[.='GIR308']",
+            "op": "present"
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:GlobeStatus[.='GIR307']",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "En CE har GlobeStatus GIR308, men der findes ingen anden CE med GIR307 i koncernstrukturen.",
+      "fix_da": "Tilføj den modsvarende CE med GlobeStatus GIR307.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70015"
+    },
+    {
+      "id": "OECD-70019",
+      "oecd_rule": "70019",
+      "level": "file",
+      "name_da": "GIR305 kræver en tilsvarende GIR306-enhed",
+      "check": {
+        "type": "conditional",
+        "container": ".",
+        "when": [
+          {
+            "path": ".//globe:GlobeStatus[.='GIR305']",
+            "op": "present"
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:GlobeStatus[.='GIR306']",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "En CE har GlobeStatus GIR305, men der findes ingen anden CE med GIR306 i koncernstrukturen.",
+      "fix_da": "Tilføj den modsvarende CE med GlobeStatus GIR306.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70019"
+    }
+  ]
+}

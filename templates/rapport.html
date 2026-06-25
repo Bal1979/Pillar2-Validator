@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valideringsrapport — Pillar II GIR</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <main class="max-w-3xl mx-auto px-6 py-10">
+    <a href="/" class="text-sm text-slate-500 hover:underline">&larr; Ny validering</a>
+
+    <!-- Dom -->
+    <div class="mt-4 rounded-xl border bg-white p-6 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="inline-block h-3 w-3 rounded-full" style="background: {{ r.verdict_color }}"></span>
+        <h1 class="text-xl font-semibold" style="color: {{ r.verdict_color }}">{{ r.verdict_label }}</h1>
+      </div>
+      <p class="mt-2 text-sm text-slate-600">{{ r.verdict_hint }}</p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% for s in r.severity_summary %}
+        <span class="rounded-full px-3 py-1 text-xs font-medium text-white" style="background: {{ s.color }}">
+          {{ s.count }} {{ s.label }}
+        </span>
+        {% else %}
+        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">Ingen fund</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Filinfo -->
+    <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-3">
+      {% if r.company.name %}<div><dt class="text-slate-400">Koncern</dt><dd>{{ r.company.name }}</dd></div>{% endif %}
+      {% if r.company.message_ref_id %}<div><dt class="text-slate-400">MessageRefId</dt><dd>{{ r.company.message_ref_id }}</dd></div>{% endif %}
+      {% if r.company.message_type %}<div><dt class="text-slate-400">MessageTypeIndic</dt><dd>{{ r.company.message_type }}</dd></div>{% endif %}
+      {% if r.company.reporting_period %}<div><dt class="text-slate-400">Rapporteringsperiode</dt><dd>{{ r.company.reporting_period }}</dd></div>{% endif %}
+      {% if r.gir_version %}<div><dt class="text-slate-400">GIR-version</dt><dd>{{ r.gir_version }}</dd></div>{% endif %}
+      <div><dt class="text-slate-400">Lag kørt</dt><dd>{{ r.layers_run|join(', ') }}</dd></div>
+    </dl>
+
+    <!-- Fund -->
+    {% if r.blocked_at_layer %}
+    <p class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+      Valideringen blev stoppet ved lag {{ r.blocked_at_layer }} — dybere kontroller giver ikke mening på en fil med denne fejl.
+    </p>
+    {% endif %}
+
+    {% for g in r.groups %}
+    <section class="mt-6">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Lag {{ g.layer_id }} · {{ g.layer_label }}
+      </h2>
+      <ul class="mt-2 space-y-3">
+        {% for f in g.findings %}
+        <li class="rounded-lg border bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <span class="font-medium">{{ f.name_da }}</span>
+            <span class="rounded px-2 py-0.5 text-xs font-medium text-white" style="background: {{ f.severity_color }}">
+              {{ f.severity_label }}
+            </span>
+          </div>
+          <p class="mt-1 text-sm text-slate-700">{{ f.message_da }}</p>
+          {% if f.suggested_fix_da %}
+          <p class="mt-1 text-sm text-slate-500"><span class="font-medium">Forslag:</span> {{ f.suggested_fix_da }}</p>
+          {% endif %}
+          {% if f.location %}
+          <p class="mt-1 text-xs text-slate-400">
+            {% if f.location.line %}Linje {{ f.location.line }}{% endif %}
+            {% if f.location.element_id %} · {{ f.location.element_id }}{% endif %}
+            {% if f.location.xpath %} · {{ f.location.xpath }}{% endif %}
+          </p>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% else %}
+    <p class="mt-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
+      Ingen fund i de aktive kontroller (lag {{ r.layers_run|join(', ') }}).
+    </p>
+    {% endfor %}
+
+    <p class="mt-8 text-xs text-slate-400">
+      Regelkatalog v{{ r.catalog_version }} · Pillar II GIR-Validator (Fase 1: lag 1-2 aktive).
+    </p>
+  </main>
+</body>
+</html>

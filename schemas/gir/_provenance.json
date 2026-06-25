@@ -1,0 +1,12 @@
+{
+  "_comment": "Provenance for OECD-skemaet. Vedligeholdes af tools/sync_oecd_schemas.py — rediger ikke i haanden.",
+  "source_url": "lokal fil: /Users/bal/Downloads/globe-xsd.zip",
+  "downloaded_at": "2026-06-24T21:58:13Z",
+  "zip_sha256": "86973f4deee009788e157a342f6e17282eb1cac7281c2ff8c5b5ab57f13cff3c",
+  "file_count": 3,
+  "files": [
+    "GLOBEXML_v1.0.xsd",
+    "isoglobetypes_v1.1.xsd",
+    "oecdglobetypes_v5.0.xsd"
+  ]
+}

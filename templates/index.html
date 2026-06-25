@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pillar II GIR-Validator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="text-2xl font-semibold">Pillar II GIR-Validator</h1>
+    <p class="mt-2 text-slate-600">
+      Validér en færdig GloBE Information Return (GIR) mod OECD's officielle
+      skema, de nummererede valideringsregler, juni-2026-guidance og danske
+      felt-regler. Regelkatalog v{{ catalog_version }} · {{ rule_count }} regler.
+    </p>
+
+    <div class="mt-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      <strong>Fase 1:</strong> lag 1 (well-formed XML + XSD-validering mod OECD's
+      GIR-skema) og lag 2 (strukturel integritet) er aktive. Lag 3-8 følger.
+    </div>
+
+    <form action="/valider" method="post" enctype="multipart/form-data"
+          class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <input type="file" name="file" accept=".xml" required
+             class="block text-sm file:mr-4 file:rounded file:border-0
+                    file:bg-slate-800 file:px-4 file:py-2 file:text-white">
+      <button type="submit"
+              class="rounded bg-slate-800 px-4 py-2 text-sm font-medium text-white">
+        Validér
+      </button>
+    </form>
+
+    <h2 class="mt-10 text-lg font-semibold">Valideringslag</h2>
+    <ol class="mt-3 space-y-1 text-sm">
+      {% for layer in layers %}
+      <li><span class="inline-block w-6 text-slate-400">{{ layer.id }}.</span>{{ layer.label_da }}</li>
+      {% endfor %}
+    </ol>
+  </main>
+</body>
+</html>

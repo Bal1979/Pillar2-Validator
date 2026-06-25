@@ -1,0 +1,214 @@
+{
+  "$schema": "https://balai.dk/schemas/p2-validation-rules-v1.json",
+  "catalog_version": "0.14.0",
+  "catalog_released": "2026-06-25",
+  "language": "da",
+  "description": "BALAI Pillar II GIR-Validator — regelkatalog (skelet, Fase 0). Hver regel er maskinlæsbar og tilhører ét af otte lag. Severity er enten statisk eller beregnes dynamisk via materialitetsprofiler. Lag 3-8 udfyldes i senere faser; se ARCHITECTURE.md.",
+  "severity_levels": [
+    {
+      "id": "critical",
+      "label_da": "Kritisk",
+      "label_en": "Critical",
+      "color": "#C23B22",
+      "default_visibility": "expanded",
+      "order": 1
+    },
+    {
+      "id": "high",
+      "label_da": "Væsentlig",
+      "label_en": "High",
+      "color": "#E07B00",
+      "default_visibility": "expanded",
+      "order": 2
+    },
+    {
+      "id": "medium",
+      "label_da": "Medium",
+      "label_en": "Medium",
+      "color": "#D4A017",
+      "default_visibility": "collapsed_count",
+      "order": 3
+    },
+    {
+      "id": "low",
+      "label_da": "Lav",
+      "label_en": "Low",
+      "color": "#6B7280",
+      "default_visibility": "collapsed",
+      "order": 4
+    },
+    {
+      "id": "info",
+      "label_da": "Info",
+      "label_en": "Info",
+      "color": "#2E5C8A",
+      "default_visibility": "hidden",
+      "order": 5
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "key": "schema",
+      "label_da": "Skema & syntaks"
+    },
+    {
+      "id": 2,
+      "key": "structural",
+      "label_da": "Strukturel integritet"
+    },
+    {
+      "id": 3,
+      "key": "oecd_file",
+      "label_da": "OECD-regler (file-level)"
+    },
+    {
+      "id": 4,
+      "key": "oecd_record",
+      "label_da": "OECD-regler (record-level)"
+    },
+    {
+      "id": 5,
+      "key": "guidance",
+      "label_da": "Guidance-afvigelser (juni 2026)"
+    },
+    {
+      "id": 6,
+      "key": "crosscheck",
+      "label_da": "GIR/QDMTT-kryds"
+    },
+    {
+      "id": 7,
+      "key": "dk_fields",
+      "label_da": "Danske felt-regler"
+    },
+    {
+      "id": 8,
+      "key": "references",
+      "label_da": "Referenceintegritet"
+    }
+  ],
+  "materiality_profiles": {
+    "konservativ": {
+      "label_da": "Konservativ",
+      "use_case_da": "Ekstern revision / rådgiverkontrol",
+      "line_absolute_dkk": 1,
+      "account_absolute_dkk": 50,
+      "relative_ppt": 0.1
+    },
+    "standard": {
+      "label_da": "Standard",
+      "use_case_da": "Koncernens egen kontrol før indsendelse",
+      "default": true,
+      "line_absolute_dkk": 1,
+      "account_absolute_dkk": 100,
+      "relative_ppt": 0.5
+    },
+    "lempelig": {
+      "label_da": "Lempelig",
+      "use_case_da": "Testkørsler og systemdebugging",
+      "line_absolute_dkk": 10,
+      "account_absolute_dkk": 1000,
+      "relative_ppt": 1.0
+    }
+  },
+  "dynamic_severity_rule": {
+    "description": "Bruges af regler markeret severity='dynamic' (i Pillar II især lag 6 GIR/QDMTT). diff vurderes mod profilens tærskler. Basis = relevant jurisdiktionssum (kan overrides).",
+    "logic": [
+      {
+        "if": "abs(diff) <= profile.absolute_floor",
+        "severity": "low"
+      },
+      {
+        "if": "abs(diff) <= profile.relative_ceiling * basis",
+        "severity": "medium"
+      },
+      {
+        "else": true,
+        "severity": "high"
+      }
+    ]
+  },
+  "rules": [
+    {
+      "id": "P2-001",
+      "layer": 1,
+      "severity": "critical",
+      "name_da": "XSD-skemafejl",
+      "authority": "OECD GIR XML Schema (GLOBEXML_v1.0)",
+      "formula": "schema.validate(doc) == true",
+      "message_da": "Filen overholder ikke OECD's GIR XML Schema. Fejl: {detail}",
+      "suggested_fix_da": "Ret elementet i kilden, eller kontakt leverandøren af GIR-eksporten. (Implementeres i Fase 1.)"
+    },
+    {
+      "id": "P2-002",
+      "layer": 1,
+      "severity": "critical",
+      "name_da": "Ugyldig XML",
+      "authority": "XML 1.0 well-formedness",
+      "formula": "xml.well_formed == true",
+      "message_da": "XML'en er ikke well-formed på linje {line}: {detail}",
+      "suggested_fix_da": "Genskab filen fra det system, der producerede GIR'en — fejl her tyder på en brudt eksport."
+    },
+    {
+      "id": "P2-010",
+      "layer": 2,
+      "severity": "critical",
+      "name_da": "Forkert rod-element",
+      "authority": "OECD GIR XML Schema (GLOBE_OECD)",
+      "formula": "root == '{urn:oecd:ties:globe:v2}GLOBE_OECD'",
+      "message_da": "Filens rod-element er {found}, men en GIR skal have GLOBE_OECD i namespace urn:oecd:ties:globe:v2.",
+      "suggested_fix_da": "Kontrollér at filen faktisk er en GIR (GloBE Information Return) og eksporteret i OECD's format — ikke en QDMTT- eller anden fil."
+    },
+    {
+      "id": "P2-011",
+      "layer": 2,
+      "severity": "critical",
+      "name_da": "Manglende MessageSpec",
+      "authority": "OECD GIR XML Schema (MessageSpec)",
+      "formula": "doc.has(MessageSpec)",
+      "message_da": "Filen mangler MessageSpec — beskedhovedet med MessageRefId, MessageTypeIndic og rapporteringsperiode.",
+      "suggested_fix_da": "MessageSpec er obligatorisk. Kontrollér eksporten fra det system, der dannede GIR'en."
+    },
+    {
+      "id": "P2-012",
+      "layer": 2,
+      "severity": "critical",
+      "name_da": "Ingen GLOBEBody",
+      "authority": "OECD GIR XML Schema (GLOBEBody)",
+      "formula": "count(GLOBEBody) >= 1",
+      "message_da": "Filen indeholder ingen GLOBEBody — selve indberetningens indhold mangler.",
+      "suggested_fix_da": "En GIR skal indeholde mindst én GLOBEBody med FilingInfo. Kontrollér eksporten."
+    },
+    {
+      "id": "P2-013",
+      "layer": 2,
+      "severity": "medium",
+      "name_da": "Ingen JurisdictionSection",
+      "authority": "OECD GIR — semantisk fuldstændighed",
+      "formula": "count(JurisdictionSection) >= 1",
+      "message_da": "GIR'en indeholder ingen JurisdictionSection. Filen er skemagyldig, men rapporterer ingen jurisdiktionsdata.",
+      "suggested_fix_da": "Kontrollér om der reelt ikke er nogen jurisdiktioner at rapportere, eller om sektionerne mangler i udtrækket."
+    },
+    {
+      "id": "P2-030",
+      "layer": 3,
+      "severity": "high",
+      "name_da": "OECD-regel (file-level)",
+      "authority": "OECD GIR Validation Rules — file-level (reference/oecd_validation_rules.json)",
+      "formula": "oecd_rules.file_level(doc)",
+      "message_da": "OECD-regel {oecd} — {name}: {detail}",
+      "suggested_fix_da": "{fix}"
+    },
+    {
+      "id": "P2-040",
+      "layer": 4,
+      "severity": "high",
+      "name_da": "OECD-regel (record-level)",
+      "authority": "OECD GIR Validation Rules — record-level (reference/oecd_validation_rules.json)",
+      "formula": "oecd_rules.record_level(doc)",
+      "message_da": "OECD-regel {oecd} — {name}: {detail}",
+      "suggested_fix_da": "{fix}"
+    }
+  ]
+}

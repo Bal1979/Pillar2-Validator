@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<globe:GLOBE_OECD xmlns:globe="urn:oecd:ties:globe:v2"
+                  xmlns:stf="urn:oecd:ties:globestf:v5"
+                  xmlns:iso="urn:oecd:ties:isoglobetypes:v1"
+                  version="1.0">
+  <globe:MessageSpec>
+    <globe:TransmittingCountry>DK</globe:TransmittingCountry>
+    <globe:ReceivingCountry>DK</globe:ReceivingCountry>
+    <globe:MessageType>GIR</globe:MessageType>
+    <globe:MessageRefId>DK2026-0001</globe:MessageRefId>
+    <globe:MessageTypeIndic>GIR101</globe:MessageTypeIndic>
+    <globe:ReportingPeriod>2025-12-31</globe:ReportingPeriod>
+    <globe:Timestamp>2026-06-25T10:00:00</globe:Timestamp>
+  </globe:MessageSpec>
+  <globe:GLOBEBody>
+    <globe:FilingInfo>
+      <globe:FilingCE>
+        <globe:ResCountryCode>DK</globe:ResCountryCode>
+        <globe:Name>Example Group A/S</globe:Name>
+        <globe:TIN TypeOfTIN="GIR3001" issuedBy="DK">DK12345678</globe:TIN>
+        <globe:Role>GIR401</globe:Role>
+      </globe:FilingCE>
+      <globe:AccountingInfo>
+        <globe:CFSofUPE>GIR501</globe:CFSofUPE>
+        <globe:FAS>IFRS</globe:FAS>
+        <globe:Currency>EUR</globe:Currency>
+      </globe:AccountingInfo>
+      <globe:Period>
+        <globe:Start>2025-01-01</globe:Start>
+        <globe:End>2025-12-31</globe:End>
+      </globe:Period>
+      <globe:NameMNE>Example Group</globe:NameMNE>
+      <globe:DocSpec>
+        <stf:DocTypeIndic>OECD1</stf:DocTypeIndic>
+        <stf:DocRefId>DK2026-0001-1</stf:DocRefId>
+      </globe:DocSpec>
+    </globe:FilingInfo>
+  </globe:GLOBEBody>
+</globe:GLOBE_OECD>

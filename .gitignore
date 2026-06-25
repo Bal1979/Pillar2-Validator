@@ -1,0 +1,10 @@
+venv/
+uploads/
+data/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+
+# Officielle OECD-kilde-PDF'er (lokale, ikke i git)
+docs/oecd_sources/
