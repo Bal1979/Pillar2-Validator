@@ -1074,3 +1074,13 @@ h1 { font-size: 2rem; color: #1a1a2e; margin-bottom: 8px; }
 .layer-list { list-style: none; padding: 0; margin: 12px 0 0; }
 .layer-list li { display: flex; gap: 10px; padding: 6px 0; font-size: 14px; border-bottom: 1px solid #f0f2f5; }
 .layer-list .ln { color: #9ca3af; width: 20px; flex: none; }
+
+/* --- Pillar II: pænt native fil-felt (ét "Vælg fil", ingen dubletter) --- */
+.file-input { display: inline-block; max-width: 100%; font-size: 14px; color: #6B7280; margin: 4px auto 0; }
+.file-input::file-selector-button {
+  margin-right: 12px; padding: 9px 16px; border: none; border-radius: 8px;
+  background: #1B365D; color: #fff; font-weight: 600; font-size: 14px; cursor: pointer;
+}
+.file-input::file-selector-button:hover { background: #24477a; }
+.btn-validate { margin-top: 16px; background: #1B365D; color: #fff; }
+.btn-validate:hover { background: #24477a; }
