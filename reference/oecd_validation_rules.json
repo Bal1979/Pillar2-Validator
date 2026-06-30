@@ -2159,6 +2159,132 @@
       "message_da": "Articles indeholder GIR2602, men Year er ikke det femte regnskabsår før periodens slutår.",
       "fix_da": "Sæt Year til det femte regnskabsår før periodens slutår.",
       "authority": "OECD Status Message User Guide Part 4 — regel 70095"
+    },
+    {
+      "id": "OECD-70027",
+      "oecd_rule": "70027",
+      "level": "record",
+      "name_da": "GlobeStatus GIR318 kræver 0% ejerskab, NOTIN-TIN og GIR806",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CE",
+        "when": [
+          {
+            "path": "globe:ID/globe:GlobeStatus",
+            "op": "in",
+            "value": [
+              "GIR318"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Ownership/globe:OwnershipPercentage",
+            "op": "eq",
+            "value": "0",
+            "as": "number"
+          },
+          {
+            "path": "globe:Ownership/globe:TIN",
+            "op": "contains",
+            "value": "NOTIN"
+          },
+          {
+            "path": "globe:Ownership/globe:OwnershipType",
+            "op": "equals",
+            "value": "GIR806"
+          }
+        ]
+      },
+      "message_da": "GlobeStatus GIR318 kræver OwnershipPercentage=0, TIN=NOTIN og OwnershipType=GIR806.",
+      "fix_da": "Ret ejerskabsoplysningerne for den udgående enhed (GIR318).",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70027"
+    },
+    {
+      "id": "OECD-70058",
+      "oecd_rule": "70058",
+      "level": "record",
+      "name_da": "InvestmentEntityTIN må ikke matche CEComputation-TIN",
+      "check": {
+        "type": "not_equal",
+        "container": ".//globe:CEComputation",
+        "left": "globe:Elections/globe:Art7.6/globe:InvestmentEntityTIN",
+        "right": "globe:TIN"
+      },
+      "message_da": "InvestmentEntityTIN ('{value}') er den samme som CEComputations TIN; de skal være forskellige.",
+      "fix_da": "Ret InvestmentEntityTIN, så den ikke er identisk med CE'ens egen TIN.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70058"
+    },
+    {
+      "id": "OECD-70106",
+      "oecd_rule": "70106",
+      "level": "record",
+      "name_da": "OtherTIN må ikke matche CEComputation-TIN",
+      "check": {
+        "type": "not_equal",
+        "container": ".//globe:CEComputation",
+        "left": ".//globe:CrossBorderAdjustments/globe:OtherTIN",
+        "right": "globe:TIN"
+      },
+      "message_da": "OtherTIN ('{value}') er den samme som CEComputations TIN; de skal være forskellige.",
+      "fix_da": "Ret OtherTIN, så den ikke er identisk med CE'ens egen TIN.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70106"
+    },
+    {
+      "id": "OECD-70116",
+      "oecd_rule": "70116",
+      "level": "record",
+      "name_da": "AdjustmentItem GIR2025 kræver IntShippingIncome (CEComputation)",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CEComputation",
+        "when": [
+          {
+            "path": ".//globe:AdjustmentItem",
+            "op": "in",
+            "value": [
+              "GIR2025"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:IntShippingIncome",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "AdjustmentItem GIR2025 kræver et udfyldt IntShippingIncome i CEComputation.",
+      "fix_da": "Udfyld IntShippingIncome når GIR2025 anvendes.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70116"
+    },
+    {
+      "id": "OECD-70117",
+      "oecd_rule": "70117",
+      "level": "record",
+      "name_da": "AdjustmentItem GIR2024 kræver Art7.6 (CEComputation)",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:CEComputation",
+        "when": [
+          {
+            "path": ".//globe:AdjustmentItem",
+            "op": "in",
+            "value": [
+              "GIR2024"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:Art7.6",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "AdjustmentItem GIR2024 kræver et udfyldt Art7.6-element i CEComputation.",
+      "fix_da": "Udfyld Art7.6 når GIR2024 anvendes.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70117"
     }
   ]
 }

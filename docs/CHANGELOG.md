@@ -3,6 +3,16 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## 0.18.0 — 2026-06-30
+
+**CEComputation-conditionals + TIN-ulighed.**
+
+- Dækning 87 → **92 regler** (+5): 70027 (GIR318 → 0% ejerskab, NOTIN-TIN,
+  GIR806), 70058 (InvestmentEntityTIN ≠ CEComputation-TIN), 70106 (OtherTIN ≠
+  CEComputation-TIN), 70116 (AdjustmentItem GIR2025 → IntShippingIncome i
+  CEComputation), 70117 (AdjustmentItem GIR2024 → Art7.6 i CEComputation).
+- Kandidater 51 → 46. Valideringssuite **92/92**, golden-GIR ren. Pakke regenereret.
+
 ## 0.17.0 — 2026-06-30
 
 **Regel-triage: ærligt dækningsbillede (scope-klassifikation).**

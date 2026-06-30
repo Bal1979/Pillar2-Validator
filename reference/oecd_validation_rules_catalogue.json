@@ -7,11 +7,11 @@
   "file": 39,
   "record": 124,
   "switched_off": 4,
-  "executable": 87,
+  "executable": 92,
   "scope": {
    "out_of_scope": 16,
-   "candidate": 51,
-   "executable": 87,
+   "candidate": 46,
+   "executable": 92,
    "switched_off": 4,
    "covered_by": 5
   }
@@ -822,8 +822,8 @@
    "rule_text": "When the GloBEStatus contains the value of GIR318, then the OwnershipPercentage should have the value of 0%, the TIN value should be NOTIN and OwnershipType should be GIR806.",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70028",
@@ -1194,8 +1194,8 @@
    "rule_text": "The InvestmentEntityTIN must not match the CEComputations TIN",
    "category": "other",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70059",
@@ -1776,8 +1776,8 @@
    "rule_text": "The OtherTIN must not be the same as the CEComputations/TIN.",
    "category": "not_equal",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70107",
@@ -1896,8 +1896,8 @@
    "rule_text": "When the 'AdjustmentItem' element contains the value GIR2025 then the 'IntShippingIncome' element must be completed",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70117",
@@ -1908,8 +1908,8 @@
    "rule_text": "When the 'AdjustmentItem' element contains the value GIR2024 then the 'Art7.6' element must be completed",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70118",

@@ -2,7 +2,7 @@
 
 Auto-genereret af `tools/update_docs.py`. Regenereres efter hver batch.
 
-Katalogversion: **0.17.0** · OECD-regelliste: **163**, heraf **87** eksekverbare (inkl. 19 beregningsregler).
+Katalogversion: **0.18.0** · OECD-regelliste: **163**, heraf **92** eksekverbare (inkl. 19 beregningsregler).
 
 ## Lag 3-4 — eksekverbare OECD-regler
 
@@ -95,6 +95,11 @@ Katalogversion: **0.17.0** · OECD-regelliste: **163**, heraf **87** eksekverbar
 | 70071 | record | conditional | Recapture-år må ikke være 4+ år før periodens slut | OECD Status Message User Guide Part 4 — regel 70071 |
 | 70094 | record | conditional | Articles GIR2605 kræver år mindst 4 år før periodens slut | OECD Status Message User Guide Part 4 — regel 70094 |
 | 70095 | record | conditional | Articles GIR2602 kræver det femte år før periodens slut | OECD Status Message User Guide Part 4 — regel 70095 |
+| 70027 | record | conditional | GlobeStatus GIR318 kræver 0% ejerskab, NOTIN-TIN og GIR806 | OECD Status Message User Guide Part 4 — regel 70027 |
+| 70058 | record | not_equal | InvestmentEntityTIN må ikke matche CEComputation-TIN | OECD Status Message User Guide Part 4 — regel 70058 |
+| 70106 | record | not_equal | OtherTIN må ikke matche CEComputation-TIN | OECD Status Message User Guide Part 4 — regel 70106 |
+| 70116 | record | conditional | AdjustmentItem GIR2025 kræver IntShippingIncome (CEComputation) | OECD Status Message User Guide Part 4 — regel 70116 |
+| 70117 | record | conditional | AdjustmentItem GIR2024 kræver Art7.6 (CEComputation) | OECD Status Message User Guide Part 4 — regel 70117 |
 
 ## Dækning pr. check-type-kategori
 
@@ -112,4 +117,4 @@ Katalogversion: **0.17.0** · OECD-regelliste: **163**, heraf **87** eksekverbar
 | mutually_exclusive | 1 | ✅ |
 | not_equal | 1 | ✅ |
 
-**Eksekverbar dækning:** 87/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.
+**Eksekverbar dækning:** 92/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.

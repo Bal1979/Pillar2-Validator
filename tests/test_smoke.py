@@ -349,7 +349,27 @@ def test_corrdocrefid_unique(tmp_path):
 
 def test_executable_coverage_grew():
     from validator.rules.oecd_rules import coverage
-    assert coverage()["executable"] == 87
+    assert coverage()["executable"] == 92
+
+
+# --- Batch 18: CEComputation-conditionals + TIN-ulighed --------------------
+def test_investmententitytin_neq_ce_tin_70058():
+    g = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2"><g:CEComputation>'
+         b'<g:TIN>DK111</g:TIN><g:Elections><g:Art7.6>'
+         b'<g:InvestmentEntityTIN>DK222</g:InvestmentEntityTIN>'
+         b'</g:Art7.6></g:Elections></g:CEComputation></g:GLOBE_OECD>')
+    bad = g.replace(b"<g:InvestmentEntityTIN>DK222<", b"<g:InvestmentEntityTIN>DK111<")
+    assert "70058" not in _eval_real(g)
+    assert "70058" in _eval_real(bad)
+
+
+def test_adjustmentitem_gir2024_requires_art76_70117():
+    bad = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2"><g:CEComputation>'
+           b'<g:AdjustmentItem>GIR2024</g:AdjustmentItem></g:CEComputation></g:GLOBE_OECD>')
+    good = bad.replace(b"</g:AdjustmentItem>",
+                       b"</g:AdjustmentItem><g:Art7.6>X</g:Art7.6>")
+    assert "70117" in _eval_real(bad)
+    assert "70117" not in _eval_real(good)
 
 
 # --- Batch 17: dato-aware conditional + relativ år-grænse (motor-udvidelse) -

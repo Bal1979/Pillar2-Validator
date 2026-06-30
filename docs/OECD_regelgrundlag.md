@@ -10,7 +10,7 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | File-level | 39 |
 | Record-level | 124 |
 | Slået fra (2026) | 4 |
-| **Eksekverbare i dag** | **87** (heraf 19 beregningsregler) |
+| **Eksekverbare i dag** | **92** (heraf 19 beregningsregler) |
 
 ## Regler pr. check-type (klassificeret)
 
@@ -135,6 +135,11 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | 70071 | record | conditional | Recapture-år må ikke være 4+ år før periodens slut |
 | 70094 | record | conditional | Articles GIR2605 kræver år mindst 4 år før periodens slut |
 | 70095 | record | conditional | Articles GIR2602 kræver det femte år før periodens slut |
+| 70027 | record | conditional | GlobeStatus GIR318 kræver 0% ejerskab, NOTIN-TIN og GIR806 |
+| 70058 | record | not_equal | InvestmentEntityTIN må ikke matche CEComputation-TIN |
+| 70106 | record | not_equal | OtherTIN må ikke matche CEComputation-TIN |
+| 70116 | record | conditional | AdjustmentItem GIR2025 kræver IntShippingIncome (CEComputation) |
+| 70117 | record | conditional | AdjustmentItem GIR2024 kræver Art7.6 (CEComputation) |
 
 ## Slået fra for første filing-cyklus (juni-2026-guidance)
 
