@@ -200,7 +200,7 @@ const arch = makeDoc([
   P("Lag 1-2 er blokerende (fejl her gør dybere lag meningsløse). Severity-modellen og dommen er fælles med SAF-T (Kritisk/Væsentlig/Medium/Lav/Info)."),
 
   H1("6. Regelmotorens vokabular (check-typer)"),
-  P("Motoren udtrykker i dag 14 kontroltyper, der tilsammen dækker alle kategorier i det officielle katalog (inkl. beregning): unique, unique_in, required_if, forbidden_if, not_equal, mutually_exclusive, conditional (if/then med element + attributter; operatorer present/absent/equals/in/contains/lt/gt/le/ge), ref_integrity, conditional_ref, format (regex), value_range, compare (dato/år/tal-ordning), cardinality, og calculation."),
+  P("Motoren udtrykker i dag 14 kontroltyper, der tilsammen dækker alle kategorier i det officielle katalog (inkl. beregning): unique, unique_in, required_if, forbidden_if, not_equal, mutually_exclusive, conditional (if/then med element + attributter; operatorer present/absent/equals/not_equals/in/not_in/contains/lt/gt/le/ge/eq/ne — med dato-/år-/tal-coercion, sammenligning mod et andet elements værdi (ref) og år-offset, fx 'år ≥ periodeslut − 4'), ref_integrity, conditional_ref, format (regex), value_range, compare (dato/år/tal-ordning), cardinality, og calculation."),
   P("calculation er en beregningsmotor, der evaluerer aritmetiske formler (subtract/sum/multiply/divide/sum_all, rekursivt, med litteral-konstanter og tolerance) over GIR'ens felter og sammenligner beregnet mod rapporteret værdi. 15 beregningsregler er aktive; resten kodes batch-vis."),
 
   H1("7. Referencedata og provenance"),

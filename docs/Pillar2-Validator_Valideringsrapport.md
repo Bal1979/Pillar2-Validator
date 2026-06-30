@@ -2,11 +2,11 @@
 
 Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at plante ÉN målrettet defekt og bekræfte, at netop den tilsigtede kontrol udløses i regelmotoren — og at den rene golden-GIR ikke giver fund. Suiten er reproducerbar og køres som CI-port (`python -m validation.run_validation`).
 
-- **Genereret:** 2026-06-30 11:59 UTC
-- **Regelkatalog:** v0.15.0
-- **Eksekverbare kontroller:** 82
+- **Genereret:** 2026-06-30 12:14 UTC
+- **Regelkatalog:** v0.16.0
+- **Eksekverbare kontroller:** 87
 - **Ren golden-GIR uden fund:** JA
-- **Auto-scenarier bestået:** 82 / 82
+- **Auto-scenarier bestået:** 87 / 87
 
 ## Resultater
 
@@ -46,6 +46,8 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **70029** | record | conditional_ref | Ownership-TIN (GIR801) skal matche en rapporteret enheds-TIN | ✅ Bestået | 70005, 70029 |
 | **70030** | record | conditional_ref | Ownership-TIN (GIR802-804) skal matche en rapporteret enheds-TIN | ✅ Bestået | 70005, 70030 |
 | **70032** | record | conditional | QIIR kræver CE-Rules GIR201 eller GIR202 | ✅ Bestået | 70032 |
+| **70038** | record | conditional | Transitional CbCR SafeHarbour udløber efter 30/06/2028 | ✅ Bestået | 70038, 70045, 70047 |
+| **70039** | record | conditional | UTPR SafeHarbour (GIR1206) udløber efter 31/12/2026 | ✅ Bestået | 70039, 70049 |
 | **70044** | record | conditional | ETRStatus skal indeholde ETRException eller ETRComputation | ✅ Bestået | 70044 |
 | **70045** | record | conditional | SafeHarbour GIR1203-1205 kræver TransitionalCbCRSafeHarbour | ✅ Bestået | 70045, 70047 |
 | **70047** | record | conditional | SafeHarbour GIR1203 kræver Revenue | ✅ Bestået | 70045, 70047 |
@@ -62,9 +64,10 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **70067** | record | unique_in | AmountAttributed-år skal være unikke | ✅ Bestået | 70067 |
 | **70068** | record | compare | CoveredTaxRefund-år må ikke ligge efter periodens start | ✅ Bestået | 70068 |
 | **70070** | record | compare | Recapture-år må ikke ligge efter periodens slut | ✅ Bestået | 70070 |
-| **70072** | record | calculation | EndAmount-beregning (DDT-recapture) | ✅ Bestået | 70072 |
+| **70071** | record | conditional | Recapture-år må ikke være 4+ år før periodens slut | ✅ Bestået | 70071 |
+| **70072** | record | calculation | EndAmount-beregning (DDT-recapture) | ✅ Bestået | 70071, 70072 |
 | **70073** | record | value_range | EndAmount må ikke være negativ | ✅ Bestået | 70073 |
-| **70074** | record | calculation | TotalDDT-beregning | ✅ Bestået | 70074 |
+| **70074** | record | calculation | TotalDDT-beregning | ✅ Bestået | 70071, 70074 |
 | **70076** | record | calculation | TransBlendCFC/Total-beregning | ✅ Bestået | 70076 |
 | **70077** | record | calculation | DeferTaxAdjustAmt/Total-beregning (Recast) | ✅ Bestået | 70077 |
 | **70078** | record | calculation | BefRecastAdjust-beregning | ✅ Bestået | 70078 |
@@ -77,6 +80,8 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **70090** | record | calculation | GlobeLoss skal svare til NetGlobeIncome/Total | ✅ Bestået | 70090 |
 | **70091** | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% | ✅ Bestået | 70091 |
 | **70093** | record | compare | NONArt4.1.5-år må ikke overstige periodens slut | ✅ Bestået | 70093 |
+| **70094** | record | conditional | Articles GIR2605 kræver år mindst 4 år før periodens slut | ✅ Bestået | 70094 |
+| **70095** | record | conditional | Articles GIR2602 kræver det femte år før periodens slut | ✅ Bestået | 70095 |
 | **70097** | record | calculation | InclusionRatio-beregning | ✅ Bestået | 70097 |
 | **70098** | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio | ✅ Bestået | 70098 |
 | **70101** | record | conditional | Employees kræves når UTPRTopUpTaxCarryForward ≠ 0 | ✅ Bestået | 70101, 70102 |

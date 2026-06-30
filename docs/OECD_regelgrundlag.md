@@ -10,7 +10,7 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | File-level | 39 |
 | Record-level | 124 |
 | Slået fra (2026) | 4 |
-| **Eksekverbare i dag** | **82** (heraf 19 beregningsregler) |
+| **Eksekverbare i dag** | **87** (heraf 19 beregningsregler) |
 
 ## Regler pr. check-type (klassificeret)
 
@@ -130,6 +130,11 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | 70091 | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% |
 | 70097 | record | calculation | InclusionRatio-beregning |
 | 70098 | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio |
+| 70038 | record | conditional | Transitional CbCR SafeHarbour udløber efter 30/06/2028 |
+| 70039 | record | conditional | UTPR SafeHarbour (GIR1206) udløber efter 31/12/2026 |
+| 70071 | record | conditional | Recapture-år må ikke være 4+ år før periodens slut |
+| 70094 | record | conditional | Articles GIR2605 kræver år mindst 4 år før periodens slut |
+| 70095 | record | conditional | Articles GIR2602 kræver det femte år før periodens slut |
 
 ## Slået fra for første filing-cyklus (juni-2026-guidance)
 

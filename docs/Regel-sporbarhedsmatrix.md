@@ -2,7 +2,7 @@
 
 Auto-genereret af `tools/update_docs.py`. Regenereres efter hver batch.
 
-Katalogversion: **0.15.0** · OECD-regelliste: **163**, heraf **82** eksekverbare (inkl. 19 beregningsregler).
+Katalogversion: **0.16.0** · OECD-regelliste: **163**, heraf **87** eksekverbare (inkl. 19 beregningsregler).
 
 ## Lag 3-4 — eksekverbare OECD-regler
 
@@ -90,6 +90,11 @@ Katalogversion: **0.15.0** · OECD-regelliste: **163**, heraf **82** eksekverbar
 | 70091 | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% | OECD Status Message User Guide Part 4 — regel 70091 |
 | 70097 | record | calculation | InclusionRatio-beregning | OECD Status Message User Guide Part 4 — regel 70097 |
 | 70098 | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio | OECD Status Message User Guide Part 4 — regel 70098 |
+| 70038 | record | conditional | Transitional CbCR SafeHarbour udløber efter 30/06/2028 | OECD Status Message User Guide Part 4 — regel 70038 |
+| 70039 | record | conditional | UTPR SafeHarbour (GIR1206) udløber efter 31/12/2026 | OECD Status Message User Guide Part 4 — regel 70039 |
+| 70071 | record | conditional | Recapture-år må ikke være 4+ år før periodens slut | OECD Status Message User Guide Part 4 — regel 70071 |
+| 70094 | record | conditional | Articles GIR2605 kræver år mindst 4 år før periodens slut | OECD Status Message User Guide Part 4 — regel 70094 |
+| 70095 | record | conditional | Articles GIR2602 kræver det femte år før periodens slut | OECD Status Message User Guide Part 4 — regel 70095 |
 
 ## Dækning pr. check-type-kategori
 
@@ -107,4 +112,4 @@ Katalogversion: **0.15.0** · OECD-regelliste: **163**, heraf **82** eksekverbar
 | mutually_exclusive | 1 | ✅ |
 | not_equal | 1 | ✅ |
 
-**Eksekverbar dækning:** 82/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.
+**Eksekverbar dækning:** 87/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.

@@ -142,16 +142,42 @@ def _cond_holds(node, cond: Dict, ns: Dict) -> bool:
         return all(v not in val for v in vals)
     if op == "contains":
         return any(val in v for v in vals)
-    if op in ("lt", "gt", "le", "ge"):
-        try:
-            nums = [float(v) for v in vals]
-            target = float(val)
-        except (ValueError, TypeError):
+    if op in ("lt", "gt", "le", "ge", "eq", "ne"):
+        # Numerisk/dato-/år-sammenligning. 'as' styrer coercion (number/year/date),
+        # 'ref' tager sammenligningsværdien fra et andet element (i stedet for en
+        # litteral 'value'), og 'offset' lægges til år/tal-grænsen (fx End.year-4).
+        as_t = cond.get("as")
+        if "ref" in cond:
+            rvals = _values(node, cond["ref"], ns)
+            target = _cnum(rvals[0], as_t) if rvals else None
+        else:
+            target = _cnum(val, as_t)
+        if target is None:
             return False
+        offset = cond.get("offset", 0)
+        if offset and not hasattr(target, "isoformat"):   # år/tal — ikke dato
+            target = target + offset
         cmp = {"lt": lambda n: n < target, "gt": lambda n: n > target,
-               "le": lambda n: n <= target, "ge": lambda n: n >= target}[op]
-        return any(cmp(n) for n in nums)
+               "le": lambda n: n <= target, "ge": lambda n: n >= target,
+               "eq": lambda n: n == target, "ne": lambda n: n != target}[op]
+        out = []
+        for v in vals:
+            cv = _cnum(v, as_t)
+            if cv is None:
+                return False
+            out.append(cmp(cv))
+        return any(out)
     raise OecdRulesError(f"ukendt operator: {op!r}")
+
+
+def _cnum(v, as_t):
+    """Coerce v til tal/år/dato. Uden 'as' antages float (bagudkompatibelt)."""
+    if as_t in ("date", "year", "number"):
+        return _coerce(str(v), as_t)
+    try:
+        return float(v)
+    except (ValueError, TypeError):
+        return None
 
 
 def _num(node, path: str, ns: Dict):

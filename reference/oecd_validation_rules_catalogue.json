@@ -7,7 +7,7 @@
   "file": 39,
   "record": 124,
   "switched_off": 4,
-  "executable": 82
+  "executable": 87
  },
  "rules": [
   {
@@ -855,7 +855,7 @@
    "rule_text": "When the ReportingPeriod or Period End Date is later than 30/06/2028, then the SafeHarbour element cannot have the input of GIR1203, GIR1204 or GIR1205.",
    "category": "compare",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70039",
@@ -866,7 +866,7 @@
    "rule_text": "When the ReportingPeriod or Period End Date is later than 31/12/2026, then the SafeHarbour element cannot have the input of GIR1206",
    "category": "compare",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70040",
@@ -1218,7 +1218,7 @@
    "rule_text": "The year cannot contain a date which is 4 years or more before the Period End Date (i.e. Reporting Fiscal Year and previous 3 Fiscal Years)",
    "category": "compare",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70072",
@@ -1471,7 +1471,7 @@
    "rule_text": "When the Articles contain the value of GIR2605, then the Year should be at least '4 years' before the YYYY value reported in the Period End Date.",
    "category": "compare",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70095",
@@ -1482,7 +1482,7 @@
    "rule_text": "When the Articles contain the value of GIR2602, then the Year should be the fifth Fiscal Year preceding the YYYY value reported in the Period End Date.",
    "category": "compare",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70096",

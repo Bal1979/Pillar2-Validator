@@ -349,7 +349,29 @@ def test_corrdocrefid_unique(tmp_path):
 
 def test_executable_coverage_grew():
     from validator.rules.oecd_rules import coverage
-    assert coverage()["executable"] == 82
+    assert coverage()["executable"] == 87
+
+
+# --- Batch 17: dato-aware conditional + relativ år-grænse (motor-udvidelse) -
+def test_safeharbour_sunset_date_70039():
+    base = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2">'
+            b'<g:Period><g:Start>2027-01-01</g:Start><g:End>2027-12-31</g:End></g:Period>'
+            b'<g:Summary><g:SafeHarbour>GIR1206</g:SafeHarbour></g:Summary></g:GLOBE_OECD>')
+    # Periode efter 31/12/2026 + GIR1206 → fyrer.
+    assert "70039" in _eval_real(base)
+    # Periode FØR cutoff → fyrer ikke.
+    ok = base.replace(b"<g:End>2027-12-31</g:End>", b"<g:End>2026-06-30</g:End>")
+    assert "70039" not in _eval_real(ok)
+
+
+def test_recapture_year_window_70071():
+    # End=2024 → tilladte år 2021-2024. Year=2020 ligger 4 år før → fyrer.
+    bad = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2">'
+           b'<g:Period><g:Start>2024-01-01</g:Start><g:End>2024-12-31</g:End></g:Period>'
+           b'<g:Recapture><g:Year>2020</g:Year></g:Recapture></g:GLOBE_OECD>')
+    good = bad.replace(b"<g:Year>2020</g:Year>", b"<g:Year>2022</g:Year>")
+    assert "70071" in _eval_real(bad)
+    assert "70071" not in _eval_real(good)
 
 
 # --- Batch 16: flere beregningsregler --------------------------------------

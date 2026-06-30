@@ -2012,6 +2012,153 @@
       "message_da": "ParentEntity/TopUpTaxShare ({reported}) er ikke lig IIR/TopUpTax × InclusionRatio ({computed}).",
       "fix_da": "Sæt TopUpTaxShare = TopUpTax × InclusionRatio.",
       "authority": "OECD Status Message User Guide Part 4 — regel 70098"
+    },
+    {
+      "id": "OECD-70038",
+      "oecd_rule": "70038",
+      "level": "record",
+      "name_da": "Transitional CbCR SafeHarbour udløber efter 30/06/2028",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "//globe:Period/globe:End",
+            "op": "gt",
+            "value": "2028-06-30",
+            "as": "date"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "not_in",
+            "value": [
+              "GIR1203",
+              "GIR1204",
+              "GIR1205"
+            ]
+          }
+        ]
+      },
+      "message_da": "Periodens slutdato er efter 30/06/2028, men SafeHarbour er GIR1203/1204/1205, som ikke længere er gyldige.",
+      "fix_da": "Fjern den transitional CbCR safe harbour for perioder efter 30. juni 2028.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70038"
+    },
+    {
+      "id": "OECD-70039",
+      "oecd_rule": "70039",
+      "level": "record",
+      "name_da": "UTPR SafeHarbour (GIR1206) udløber efter 31/12/2026",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[globe:SafeHarbour]",
+        "when": [
+          {
+            "path": "//globe:Period/globe:End",
+            "op": "gt",
+            "value": "2026-12-31",
+            "as": "date"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:SafeHarbour",
+            "op": "not_in",
+            "value": [
+              "GIR1206"
+            ]
+          }
+        ]
+      },
+      "message_da": "Periodens slutdato er efter 31/12/2026, men SafeHarbour er GIR1206, som ikke længere er gyldig.",
+      "fix_da": "Fjern UTPR safe harbour (GIR1206) for perioder efter 31. december 2026.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70039"
+    },
+    {
+      "id": "OECD-70071",
+      "oecd_rule": "70071",
+      "level": "record",
+      "name_da": "Recapture-år må ikke være 4+ år før periodens slut",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:Recapture",
+        "when": [],
+        "then": [
+          {
+            "path": "globe:Year",
+            "op": "ge",
+            "ref": "//globe:Period/globe:End",
+            "offset": -3,
+            "as": "year"
+          }
+        ]
+      },
+      "message_da": "Recapture/Year ligger mere end 3 år før periodens slutår (kun rapporteringsåret + de 3 foregående år er tilladt).",
+      "fix_da": "Ret Year, så det ligger inden for rapporteringsåret og de tre foregående regnskabsår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70071"
+    },
+    {
+      "id": "OECD-70094",
+      "oecd_rule": "70094",
+      "level": "record",
+      "name_da": "Articles GIR2605 kræver år mindst 4 år før periodens slut",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[local-name()='NONArt4.1.5']",
+        "when": [
+          {
+            "path": "globe:Articles",
+            "op": "in",
+            "value": [
+              "GIR2605"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Year",
+            "op": "le",
+            "ref": "//globe:Period/globe:End",
+            "offset": -4,
+            "as": "year"
+          }
+        ]
+      },
+      "message_da": "Articles indeholder GIR2605, men Year ligger ikke mindst 4 år før periodens slutår.",
+      "fix_da": "Sæt Year til mindst 4 år før periodens slutår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70094"
+    },
+    {
+      "id": "OECD-70095",
+      "oecd_rule": "70095",
+      "level": "record",
+      "name_da": "Articles GIR2602 kræver det femte år før periodens slut",
+      "check": {
+        "type": "conditional",
+        "container": ".//*[local-name()='NONArt4.1.5']",
+        "when": [
+          {
+            "path": "globe:Articles",
+            "op": "in",
+            "value": [
+              "GIR2602"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:Year",
+            "op": "eq",
+            "ref": "//globe:Period/globe:End",
+            "offset": -5,
+            "as": "year"
+          }
+        ]
+      },
+      "message_da": "Articles indeholder GIR2602, men Year er ikke det femte regnskabsår før periodens slutår.",
+      "fix_da": "Sæt Year til det femte regnskabsår før periodens slutår.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70095"
     }
   ]
 }

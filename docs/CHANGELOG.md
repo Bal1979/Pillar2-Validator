@@ -3,6 +3,20 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## 0.16.0 — 2026-06-30
+
+**Motor-udvidelse: dato-aware conditional + relativ år-grænse → 5 nye regler.**
+
+- `conditional`-operatorerne kan nu coerce'e til dato/år (`as`), sammenligne mod
+  et andet elements værdi (`ref`) og lægge en `offset` til år-/tal-grænsen (fx
+  `End.year − 4`). Tilføjet `eq`/`ne`. Bagudkompatibelt.
+- Dækning 82 → **87 regler** (+5): 70038/70039 (SafeHarbour-udløbsdatoer
+  30/06/2028 og 31/12/2026), 70071 (Recapture-år inden for rapporteringsåret +
+  3 foregående), 70094 (Articles GIR2605 → år ≥ 4 før periodeslut), 70095
+  (Articles GIR2602 → femte år før periodeslut).
+- Defekt-synthesizeren håndterer nu `as`/`ref`/`offset`. Valideringssuite
+  **87/87**, golden-GIR ren. Governance-pakken regenereret.
+
 ## 0.15.0 — 2026-06-30
 
 **Flere beregningsregler (substans, Art4.1.5, IIR-inklusionsratio).**

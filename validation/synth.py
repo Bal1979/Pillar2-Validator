@@ -141,7 +141,70 @@ def _numstr(x: float) -> str:
     return str(int(x)) if float(x).is_integer() else str(x)
 
 
-def _cond_satisfy(cont, cond):
+from datetime import date as _date
+
+
+def _put(root, cont, path, text):
+    """Skab path med tekst — absolut (// eller /) under root, ellers under cont."""
+    if path.startswith("/"):
+        ensure_path(root, path, text=text)
+    else:
+        ensure_path(cont, path, text=text)
+
+
+def _anchor(as_t):
+    """Basisværdi for en ref-grænse: (numerisk, streng-til-element)."""
+    if as_t == "year":
+        return 2024, "2024"
+    if as_t == "date":
+        return _date(2024, 6, 30), "2024-06-30"
+    return 100.0, "100"
+
+
+def _pick(op, as_t, T, satisfy):
+    """Returnér en streng-værdi der opfylder (satisfy) eller bryder op vs. grænsen T."""
+    if as_t == "date":
+        Y = T.year
+        true_v = {"gt": _date(Y + 1, 1, 1), "ge": _date(Y, T.month, T.day),
+                  "lt": _date(Y - 1, 12, 31), "le": _date(Y, T.month, T.day),
+                  "eq": _date(Y, T.month, T.day), "ne": _date(Y + 1, 1, 1)}
+        false_v = {"gt": _date(Y - 1, 1, 1), "ge": _date(Y - 1, 1, 1),
+                   "lt": _date(Y + 1, 1, 1), "le": _date(Y + 1, 1, 1),
+                   "eq": _date(Y + 1, 1, 1), "ne": _date(Y, T.month, T.day)}
+        return (true_v if satisfy else false_v)[op].isoformat()
+    T = float(T)
+    pair = {"gt": (T + 1, T - 1), "ge": (T, T - 1), "lt": (T - 1, T + 1),
+            "le": (T, T + 1), "eq": (T, T + 1), "ne": (T + 1, T)}[op]
+    v = pair[0] if satisfy else pair[1]
+    return str(int(v)) if (as_t == "year" or float(v).is_integer()) else str(v)
+
+
+def _numeric_cond(root, cont, cond, satisfy):
+    """Plant en numerisk/dato/år-betingelse (med evt. ref/offset/as)."""
+    op, as_t = cond["op"], cond.get("as")
+    offset = cond.get("offset", 0)
+    if "ref" in cond:
+        Tnum, refstr = _anchor(as_t)
+        _put(root, cont, cond["ref"], refstr)
+        T = Tnum + offset if as_t != "date" else Tnum
+    else:
+        T = _cnum_synth(cond.get("value"), as_t)
+        if T is not None and as_t != "date":
+            T = T + offset
+    ensure_path(cont, cond["path"], text=_pick(op, as_t, T, satisfy), reuse=False)
+
+
+def _cnum_synth(v, as_t):
+    if as_t == "date":
+        return _date.fromisoformat(str(v)[:10])
+    if as_t == "year":
+        import re as _re
+        m = _re.search(r"\d{4}", str(v))
+        return int(m.group(0)) if m else None
+    return float(v)
+
+
+def _cond_satisfy(root, cont, cond):
     path, op, val = cond["path"], cond["op"], cond.get("value")
     if op == "present":
         ensure_path(cont, path)
@@ -155,13 +218,11 @@ def _cond_satisfy(cont, cond):
         ensure_path(cont, path, text="ZZZ-unmatched")
     elif op == "absent":
         pass
-    elif op in ("lt", "le", "gt", "ge"):
-        n = float(val)
-        good = {"lt": n - 1, "le": n, "gt": n + 1, "ge": n}[op]
-        ensure_path(cont, path, text=_numstr(good))
+    elif op in ("lt", "le", "gt", "ge", "eq", "ne"):
+        _numeric_cond(root, cont, cond, satisfy=True)
 
 
-def _cond_violate(cont, cond):
+def _cond_violate(root, cont, cond):
     """Gør then-betingelsen FALSK. Vigtigt: når then deler path med en when-
     betingelse (samme element), må vi IKKE overskrive when-værdien — derfor
     tilføjer not_in/not_equals/contains et NYT sibling-element (reuse=False),
@@ -178,10 +239,8 @@ def _cond_violate(cont, cond):
                     reuse=False)
     elif op == "contains":
         ensure_path(cont, path, text="ZZZ-without-token", reuse=False)
-    elif op in ("lt", "le", "gt", "ge"):
-        n = float(val)
-        bad = {"lt": n + 1, "le": n + 1, "gt": n - 1, "ge": n - 1}[op]
-        ensure_path(cont, path, text=_numstr(bad), reuse=False)
+    elif op in ("lt", "le", "gt", "ge", "eq", "ne"):
+        _numeric_cond(root, cont, cond, satisfy=False)
 
 
 def _container(root, path):
@@ -273,15 +332,15 @@ def synth_defect(rule: dict) -> Optional[bytes]:
         if t == "conditional":
             cont = _container(root, chk["container"])
             for c in chk.get("when", []):
-                _cond_satisfy(cont, c)
+                _cond_satisfy(root, cont, c)
             if chk["then"]:
-                _cond_violate(cont, chk["then"][0])
+                _cond_violate(root, cont, chk["then"][0])
             return _ser(root)
 
         if t == "conditional_ref":
             cont = _container(root, chk["container"])
             for c in chk.get("when", []):
-                _cond_satisfy(cont, c)
+                _cond_satisfy(root, cont, c)
             ensure_path(cont, chk["source"], text="ORPHAN-REF", reuse=False)
             return _ser(root)
 
