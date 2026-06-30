@@ -3,6 +3,19 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## 0.15.0 — 2026-06-30
+
+**Flere beregningsregler (substans, Art4.1.5, IIR-inklusionsratio).**
+
+- Dækning 78 → **82 regler** (+4): 70087 (SubstanceExclusion/Total = PayrollCost×
+  PayrollMarkUp + TangibleAssetValue×TangibleAssetMarkup), 70091
+  (ExpectedAdjustedCoveredTax = GlobeLoss × 15 %), 70097 (InclusionRatio =
+  (NetGlobeIncome − OtherOwnershipAllocation) / NetGlobeIncome), 70098
+  (TopUpTaxShare = TopUpTax × InclusionRatio).
+- Valideringssuiten dækker nu **82/82** (defekt-synthesizer bruger 1-fyld, så
+  divide-formler ikke rammer nul-nævner). Golden-GIR forbliver ren.
+- Governance-pakken (docx + sporbarhedsmatrix + valideringsrapport) regenereret.
+
 ## Drift, login & governance — 2026-06-30 (katalog 0.14.0)
 
 **Central login, BALAI-UI, uafhængig valideringssuite og godkendelsespakke.**

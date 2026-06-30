@@ -7,7 +7,7 @@
   "file": 39,
   "record": 124,
   "switched_off": 4,
-  "executable": 78
+  "executable": 82
  },
  "rules": [
   {
@@ -1394,7 +1394,7 @@
    "rule_text": "The Total integer for the SubstanceExclusion is equal to the following calculation: PayrollCost * PayrollMarkUp + TangibleAssetValue * TangibleAssetMarkup",
    "category": "calculation",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70088",
@@ -1438,7 +1438,7 @@
    "rule_text": "The ExpectedAdjustedCoveredTax must be equal to the following calculation: GlobeLoss * 15%",
    "category": "calculation",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70092",
@@ -1504,7 +1504,7 @@
    "rule_text": "The InclusionRatio must equal the following calculation: (NetGlobeIncome - OtherOwnershipAllocation) DIVIDED by NetGlobeIncome",
    "category": "calculation",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70098",
@@ -1515,7 +1515,7 @@
    "rule_text": "The IIR/ParentEntity/TopUpTaxShare must equal the following calculation: IIR/TopUpTax * InclusionRatio",
    "category": "calculation",
    "switched_off_2026": false,
-   "executable": false
+   "executable": true
   },
   {
    "code": "70099",

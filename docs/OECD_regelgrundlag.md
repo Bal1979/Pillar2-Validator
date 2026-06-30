@@ -10,7 +10,7 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | File-level | 39 |
 | Record-level | 124 |
 | Slået fra (2026) | 4 |
-| **Eksekverbare i dag** | **78** (heraf 15 beregningsregler) |
+| **Eksekverbare i dag** | **82** (heraf 19 beregningsregler) |
 
 ## Regler pr. check-type (klassificeret)
 
@@ -18,7 +18,7 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 |---|---|---|
 | conditional | 64 | ✅ understøttet |
 | other | 42 | 🔎 gennemgang |
-| calculation | 25 | ✅ delvist (15 kodet) |
+| calculation | 25 | ✅ delvist (19 kodet) |
 | compare | 15 | ✅ understøttet |
 | required | 4 | ✅ understøttet |
 | format | 3 | ✅ understøttet |
@@ -126,6 +126,10 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | 70093 | record | compare | NONArt4.1.5-år må ikke overstige periodens slut |
 | 70015 | file | conditional | GIR308 kræver en tilsvarende GIR307-enhed |
 | 70019 | file | conditional | GIR305 kræver en tilsvarende GIR306-enhed |
+| 70087 | record | calculation | SubstanceExclusion/Total-beregning |
+| 70091 | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% |
+| 70097 | record | calculation | InclusionRatio-beregning |
+| 70098 | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio |
 
 ## Slået fra for første filing-cyklus (juni-2026-guidance)
 

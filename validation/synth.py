@@ -189,7 +189,12 @@ def _container(root, path):
 
 
 def _zero_formula(cont, formula):
+    """Sæt alle felt-operander til 1, så computed bliver et endeligt tal (≠ target
+    999999) UDEN risiko for division med nul i divide-formler."""
     if isinstance(formula, (int, float)):
+        return
+    if formula.get("op") == "sum_all":
+        ensure_path(cont, formula["path"], text="1", reuse=False)
         return
     for operand in formula.get("operands", []):
         if isinstance(operand, dict):
@@ -197,7 +202,7 @@ def _zero_formula(cont, formula):
         elif isinstance(operand, (int, float)):
             continue
         else:
-            ensure_path(cont, operand, text="0")
+            ensure_path(cont, operand, text="1")
 
 
 def _breaking_pair(op, as_t):

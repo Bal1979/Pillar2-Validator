@@ -25,7 +25,7 @@ Pipeline lag 1-4 implementeret og testet. Nøgletal (version/regler/typer/tests)
 holdes ajour af `tools/update_docs.py` — se blokken nedenfor:
 
 <!-- STATS:START -->
-**Nøgletal (katalog 0.14.0):** 78/163 OECD-regler eksekverbare (heraf 15 beregningsregler) · 14 check-typer · 74 tests grønne.
+**Nøgletal (katalog 0.15.0):** 82/163 OECD-regler eksekverbare (heraf 19 beregningsregler) · 14 check-typer · 75 tests grønne.
 <!-- STATS:END -->
 
 - **Regelgrundlag (komplet).** `reference/oecd_validation_rules_catalogue.json` =
@@ -37,7 +37,7 @@ holdes ajour af `tools/update_docs.py` — se blokken nedenfor:
   `validator/rules/oecd_rules.py` evaluerer + respekterer switched_off. Umbrella-
   regler P2-030 (file) / P2-040 (record). `tools/sync_oecd_rules.py --check/--list`
   rapporterer dækning.
-- **Check-typer (13):** unique, required_if, forbidden_if, not_equal,
+- **Check-typer (14):** unique, unique_in, required_if, forbidden_if, not_equal,
   mutually_exclusive, conditional (if/then m. element+attribut), conditional_ref,
   ref_integrity, format, value_range, compare, cardinality, **calculation**
   (aritmetisk formel: beregnet vs. rapporteret; subtract/sum/multiply/divide/sum_all,
@@ -109,7 +109,8 @@ Pillar II er koblet på den fælles BALAI-brugerstyring, præcis som SAF-T:
 - **Valideringssuite** `validation/`: `synth.py` planter ÉN målrettet defekt pr.
   eksekverbar OECD-regel ud fra dens `check`-definition (defekt-synthesizer);
   `run_validation.py` bekræfter at netop den regel fyrer + at golden-GIR er ren.
-  **78/78 består**, gated i CI (`python -m validation.run_validation`; også som
+  **Alle eksekverbare regler består** (antal: se STATS-nøgletal), gated i CI
+  (`python -m validation.run_validation`; også som
   pytest `test_validation_suite_all_pass`). Ny regel → automatisk dækket.
 - **Godkendelsespakke** `docs/` (1:1 med SAF-T): 4 docx + sporbarhedsmatrix.xlsx +
   valideringsrapport.md + README + CHANGELOG, alle med `Pillar2-Validator_`-præfiks.

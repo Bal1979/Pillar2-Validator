@@ -349,7 +349,20 @@ def test_corrdocrefid_unique(tmp_path):
 
 def test_executable_coverage_grew():
     from validator.rules.oecd_rules import coverage
-    assert coverage()["executable"] == 78
+    assert coverage()["executable"] == 82
+
+
+# --- Batch 16: flere beregningsregler --------------------------------------
+def test_expected_adjusted_covered_tax_70091():
+    g = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2"><g:OverallComputation>'
+         b'<g:GlobeLoss>1000</g:GlobeLoss>'
+         b'<g:AdditionalTopUpTax><g:Art4.1.5>'
+         b'<g:ExpectedAdjustedCoveredTax>150</g:ExpectedAdjustedCoveredTax>'
+         b'</g:Art4.1.5></g:AdditionalTopUpTax></g:OverallComputation></g:GLOBE_OECD>')
+    bad = g.replace(b"<g:ExpectedAdjustedCoveredTax>150<",
+                    b"<g:ExpectedAdjustedCoveredTax>999<")
+    assert "70091" not in _eval_real(g)
+    assert "70091" in _eval_real(bad)
 
 
 # --- Batch 15: år-mod-periode-compares + kryds-CE-eksistens ----------------

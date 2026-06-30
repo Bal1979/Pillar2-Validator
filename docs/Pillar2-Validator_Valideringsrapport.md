@@ -2,11 +2,11 @@
 
 Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at plante ÉN målrettet defekt og bekræfte, at netop den tilsigtede kontrol udløses i regelmotoren — og at den rene golden-GIR ikke giver fund. Suiten er reproducerbar og køres som CI-port (`python -m validation.run_validation`).
 
-- **Genereret:** 2026-06-30 11:37 UTC
-- **Regelkatalog:** v0.14.0
-- **Eksekverbare kontroller:** 78
+- **Genereret:** 2026-06-30 11:59 UTC
+- **Regelkatalog:** v0.15.0
+- **Eksekverbare kontroller:** 82
 - **Ren golden-GIR uden fund:** JA
-- **Auto-scenarier bestået:** 78 / 78
+- **Auto-scenarier bestået:** 82 / 82
 
 ## Resultater
 
@@ -72,14 +72,18 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **70082** | record | conditional | DeferredTaxAssets kræver Start eller Recast = 0 | ✅ Bestået | 70082 |
 | **70083** | record | calculation | ExcessNegTaxExpense/Remaining-beregning | ✅ Bestået | 70083 |
 | **70086** | record | calculation | ExcessProfits-beregning | ✅ Bestået | 70086 |
+| **70087** | record | calculation | SubstanceExclusion/Total-beregning | ✅ Bestået | 70087 |
 | **70088** | record | conditional | Negativ NetGlobeIncome kræver Art4.1.5 | ✅ Bestået | 70088 |
 | **70090** | record | calculation | GlobeLoss skal svare til NetGlobeIncome/Total | ✅ Bestået | 70090 |
+| **70091** | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% | ✅ Bestået | 70091 |
 | **70093** | record | compare | NONArt4.1.5-år må ikke overstige periodens slut | ✅ Bestået | 70093 |
+| **70097** | record | calculation | InclusionRatio-beregning | ✅ Bestået | 70097 |
+| **70098** | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio | ✅ Bestået | 70098 |
 | **70101** | record | conditional | Employees kræves når UTPRTopUpTaxCarryForward ≠ 0 | ✅ Bestået | 70101, 70102 |
 | **70102** | record | conditional | TangibleAssetValue kræves når UTPRTopUpTaxCarryForward ≠ 0 | ✅ Bestået | 70101, 70102 |
 | **70103** | record | conditional | UTPRPercentage skal være 0 når carryforward > 0 | ✅ Bestået | 70101, 70102, 70103 |
 | **70104** | record | value_range | UTPRTopUpTaxCarriedForward må ikke være negativ | ✅ Bestået | 70104 |
-| **70105** | record | calculation | UTPRTopUpTaxCarriedForward-beregning | ✅ Bestået | 70105 |
+| **70105** | record | calculation | UTPRTopUpTaxCarriedForward-beregning | ✅ Bestået | 70101, 70102, 70103, 70105 |
 | **70107** | record | conditional | Exception=TRUE udelukker CrossBorderAdjustments | ✅ Bestået | 70107 |
 | **70108** | record | conditional | Basis kræver TaxRate | ✅ Bestået | 70108 |
 | **70109** | record | conditional | Basis GIR1907 kræver IndOwners/ResCountryCode | ✅ Bestået | 70109 |

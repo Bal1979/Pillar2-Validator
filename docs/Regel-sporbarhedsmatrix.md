@@ -2,7 +2,7 @@
 
 Auto-genereret af `tools/update_docs.py`. Regenereres efter hver batch.
 
-Katalogversion: **0.14.0** · OECD-regelliste: **163**, heraf **78** eksekverbare (inkl. 15 beregningsregler).
+Katalogversion: **0.15.0** · OECD-regelliste: **163**, heraf **82** eksekverbare (inkl. 19 beregningsregler).
 
 ## Lag 3-4 — eksekverbare OECD-regler
 
@@ -86,6 +86,10 @@ Katalogversion: **0.14.0** · OECD-regelliste: **163**, heraf **78** eksekverbar
 | 70093 | record | compare | NONArt4.1.5-år må ikke overstige periodens slut | OECD Status Message User Guide Part 4 — regel 70093 |
 | 70015 | file | conditional | GIR308 kræver en tilsvarende GIR307-enhed | OECD Status Message User Guide Part 4 — regel 70015 |
 | 70019 | file | conditional | GIR305 kræver en tilsvarende GIR306-enhed | OECD Status Message User Guide Part 4 — regel 70019 |
+| 70087 | record | calculation | SubstanceExclusion/Total-beregning | OECD Status Message User Guide Part 4 — regel 70087 |
+| 70091 | record | calculation | ExpectedAdjustedCoveredTax = GlobeLoss × 15% | OECD Status Message User Guide Part 4 — regel 70091 |
+| 70097 | record | calculation | InclusionRatio-beregning | OECD Status Message User Guide Part 4 — regel 70097 |
+| 70098 | record | calculation | TopUpTaxShare = TopUpTax × InclusionRatio | OECD Status Message User Guide Part 4 — regel 70098 |
 
 ## Dækning pr. check-type-kategori
 
@@ -93,7 +97,7 @@ Katalogversion: **0.14.0** · OECD-regelliste: **163**, heraf **78** eksekverbar
 |---|---|---|
 | conditional | 64 | ✅ |
 | other | 42 | 🔎 gennemgang |
-| calculation | 25 | ✅ delvist (15 kodet) |
+| calculation | 25 | ✅ delvist (19 kodet) |
 | compare | 15 | ✅ |
 | required | 4 | ✅ |
 | format | 3 | ✅ |
@@ -103,4 +107,4 @@ Katalogversion: **0.14.0** · OECD-regelliste: **163**, heraf **78** eksekverbar
 | mutually_exclusive | 1 | ✅ |
 | not_equal | 1 | ✅ |
 
-**Eksekverbar dækning:** 78/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.
+**Eksekverbar dækning:** 82/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.

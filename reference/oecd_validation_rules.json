@@ -1906,6 +1906,112 @@
       "message_da": "En CE har GlobeStatus GIR305, men der findes ingen anden CE med GIR306 i koncernstrukturen.",
       "fix_da": "Tilføj den modsvarende CE med GlobeStatus GIR306.",
       "authority": "OECD Status Message User Guide Part 4 — regel 70019"
+    },
+    {
+      "id": "OECD-70087",
+      "oecd_rule": "70087",
+      "level": "record",
+      "name_da": "SubstanceExclusion/Total-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:SubstanceExclusion",
+        "target": "globe:Total",
+        "formula": {
+          "op": "sum",
+          "operands": [
+            {
+              "op": "multiply",
+              "operands": [
+                "globe:PayrollCost",
+                "globe:PayrollMarkUp"
+              ]
+            },
+            {
+              "op": "multiply",
+              "operands": [
+                "globe:TangibleAssetValue",
+                "globe:TangibleAssetMarkup"
+              ]
+            }
+          ]
+        },
+        "tolerance": 1
+      },
+      "message_da": "SubstanceExclusion/Total ({reported}) er ikke lig PayrollCost×PayrollMarkUp + TangibleAssetValue×TangibleAssetMarkup ({computed}).",
+      "fix_da": "Ret Total, så det svarer til substansudelukkelsens beregning.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70087"
+    },
+    {
+      "id": "OECD-70091",
+      "oecd_rule": "70091",
+      "level": "record",
+      "name_da": "ExpectedAdjustedCoveredTax = GlobeLoss × 15%",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:OverallComputation",
+        "target": ".//*[local-name()='Art4.1.5']/globe:ExpectedAdjustedCoveredTax",
+        "formula": {
+          "op": "multiply",
+          "operands": [
+            "globe:GlobeLoss",
+            0.15
+          ]
+        },
+        "tolerance": 1
+      },
+      "message_da": "ExpectedAdjustedCoveredTax ({reported}) er ikke lig GlobeLoss × 15% ({computed}).",
+      "fix_da": "Sæt ExpectedAdjustedCoveredTax = GlobeLoss × 15%.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70091"
+    },
+    {
+      "id": "OECD-70097",
+      "oecd_rule": "70097",
+      "level": "record",
+      "name_da": "InclusionRatio-beregning",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:ParentEntity",
+        "target": "globe:InclusionRatio",
+        "formula": {
+          "op": "divide",
+          "operands": [
+            {
+              "op": "subtract",
+              "operands": [
+                "globe:NetGlobeIncome",
+                "globe:OtherOwnershipAllocation"
+              ]
+            },
+            "globe:NetGlobeIncome"
+          ]
+        },
+        "tolerance": 0.01
+      },
+      "message_da": "InclusionRatio ({reported}) er ikke lig (NetGlobeIncome − OtherOwnershipAllocation) / NetGlobeIncome ({computed}).",
+      "fix_da": "Ret InclusionRatio iht. formlen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70097"
+    },
+    {
+      "id": "OECD-70098",
+      "oecd_rule": "70098",
+      "level": "record",
+      "name_da": "TopUpTaxShare = TopUpTax × InclusionRatio",
+      "check": {
+        "type": "calculation",
+        "container": ".//globe:IIR",
+        "target": "globe:ParentEntity/globe:TopUpTaxShare",
+        "formula": {
+          "op": "multiply",
+          "operands": [
+            "globe:TopUpTax",
+            "globe:ParentEntity/globe:InclusionRatio"
+          ]
+        },
+        "tolerance": 1
+      },
+      "message_da": "ParentEntity/TopUpTaxShare ({reported}) er ikke lig IIR/TopUpTax × InclusionRatio ({computed}).",
+      "fix_da": "Sæt TopUpTaxShare = TopUpTax × InclusionRatio.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70098"
     }
   ]
 }
