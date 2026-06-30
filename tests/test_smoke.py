@@ -742,3 +742,18 @@ def test_all_noncalc_categories_have_type():
     # required/forbidden udtrykkes af conditional/required_if/forbidden_if.
     expressible = _VALID_TYPES | {"required", "forbidden"}
     assert cats <= expressible, f"ikke-dækkede: {cats - expressible}"
+
+
+# --- Uafhængig valideringssuite som CI-port --------------------------------
+def test_validation_suite_all_pass():
+    """Gate: den uafhængige valideringssuite skal have ren golden-base og
+    bestå alle auto-scenarier (én planted defekt pr. eksekverbar kontrol)."""
+    from validation.run_validation import run_all
+    data = run_all()
+    assert data["base_ok"], \
+        f"golden-GIR gav fund: {data['base_fired']}"
+    auto = [r for r in data["results"] if r["passed"] is not None]
+    failed = [r["rule"] for r in auto if not r["passed"]]
+    assert not failed, f"valideringsscenarier fejlede: {failed}"
+    # Forventet: hver eksekverbar regel har et auto-scenarie.
+    assert len(auto) == data["executable"]

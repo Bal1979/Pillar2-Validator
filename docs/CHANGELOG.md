@@ -3,6 +3,27 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## Drift, login & governance — 2026-06-30 (katalog 0.14.0)
+
+**Central login, BALAI-UI, uafhængig valideringssuite og godkendelsespakke.**
+
+- **Central brugerstyring:** koblet på den fælles `balai_auth` (slug `pillar2`).
+  Delt SSO på `*.balai.dk`, per-tool-adgang, gatede ruter (`/`, `/valider`),
+  CSRF + login-rate-limit. Registreret i det centrale tool-register på auth.balai.dk.
+  Deployet på `pillar2.balai.dk` (Railway).
+- **UI:** BALAI-skal (blåt B, top-bar med bruger/log-ud, header, footer) på linje
+  med SAF-T. Forsidens regeltælling viser nu korrekt "8 strukturregler + 78
+  OECD-kontroller". CSP strammet (Tailwind-CDN fjernet, kun lokal `style.css`).
+- **Uafhængig valideringssuite (`validation/`):** planter ÉN målrettet defekt pr.
+  eksekverbar OECD-kontrol og bekræfter, at netop den fyrer — golden-GIR forbliver
+  ren. **78/78 består**; gated i CI (`python -m validation.run_validation`).
+- **Godkendelses-/dokumentationspakke** (`docs/`, samme ramme som SAF-T): 4 docx
+  (Godkendelses-overblik, Solution_Architecture, Sikkerhed_og_databehandling,
+  Hosting_og_drift), sporbarhedsmatrix.xlsx (4 faner) og auto-genereret
+  valideringsrapport. Generatorer: `tools/build_approval_docs.js`,
+  `tools/build_traceability.py`. Auth markeret **Dækket**.
+- Testsuite 73 → **74** (login-gating + valideringssuite-port).
+
 ## 0.14.0 — 2026-06-25
 
 **År-mod-periode-sammenligninger + kryds-CE-eksistens.**

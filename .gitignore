@@ -8,3 +8,4 @@ __pycache__/
 
 # Officielle OECD-kilde-PDF'er (lokale, ikke i git)
 docs/oecd_sources/
+node_modules/

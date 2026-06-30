@@ -25,7 +25,7 @@ Pipeline lag 1-4 implementeret og testet. Nøgletal (version/regler/typer/tests)
 holdes ajour af `tools/update_docs.py` — se blokken nedenfor:
 
 <!-- STATS:START -->
-**Nøgletal (katalog 0.14.0):** 78/163 OECD-regler eksekverbare (heraf 15 beregningsregler) · 14 check-typer · 72 tests grønne.
+**Nøgletal (katalog 0.14.0):** 78/163 OECD-regler eksekverbare (heraf 15 beregningsregler) · 14 check-typer · 74 tests grønne.
 <!-- STATS:END -->
 
 - **Regelgrundlag (komplet).** `reference/oecd_validation_rules_catalogue.json` =
@@ -104,12 +104,28 @@ Pillar II er koblet på den fælles BALAI-brugerstyring, præcis som SAF-T:
   `_login_pillar2()` opretter en all_access-bruger og logger ind via
   session_transaction. Landing-kort på balai.dk tilføjes når subdomænet er live.
 
+## Uafhængig valideringssuite + godkendelsespakke (EY-ramme)
+
+- **Valideringssuite** `validation/`: `synth.py` planter ÉN målrettet defekt pr.
+  eksekverbar OECD-regel ud fra dens `check`-definition (defekt-synthesizer);
+  `run_validation.py` bekræfter at netop den regel fyrer + at golden-GIR er ren.
+  **78/78 består**, gated i CI (`python -m validation.run_validation`; også som
+  pytest `test_validation_suite_all_pass`). Ny regel → automatisk dækket.
+- **Godkendelsespakke** `docs/` (1:1 med SAF-T): 4 docx + sporbarhedsmatrix.xlsx +
+  valideringsrapport.md + README + CHANGELOG, alle med `Pillar2-Validator_`-præfiks.
+  Generatorer: `tools/build_approval_docs.js` (docx-js; kør `npm install docx` —
+  `node_modules` gitignored) og `tools/build_traceability.py` (xlsx fra regel-JSON).
+  De gamle uprefiksede `.md` er bevaret som arbejdskilde. Auth = **Dækket**.
+- **Regenerér pakken:** `python -m validation.run_validation` → rapport;
+  `python tools/build_traceability.py` → xlsx; `node tools/build_approval_docs.js`
+  → docx; `python tools/update_docs.py` → STATS + matrix.md.
+
 ## Genoptag hurtigt
 
 ```bash
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-pytest                                   # smoke-tests
+pytest                                   # smoke-tests + valideringssuite-port
 python app.py                            # kør lokalt → http://127.0.0.1:5000
 python tools/sync_oecd_schemas.py --import \
   --gir-zip ~/Downloads/globe-xsd.zip \
