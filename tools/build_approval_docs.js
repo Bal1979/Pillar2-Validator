@@ -27,6 +27,23 @@ const DATE = "30. juni 2026";
 const CONTENT_W = 9360;
 const NAVY = "1B365D";
 
+// --- Nøgletal beregnes fra kataloget, så docx aldrig driver ----------------
+const REF = path.resolve(__dirname, "..", "reference");
+const CAT = JSON.parse(fs.readFileSync(path.join(REF, "oecd_validation_rules_catalogue.json"), "utf8"));
+const RULESET = JSON.parse(fs.readFileSync(path.join(REF, "oecd_validation_rules.json"), "utf8"));
+const SCOPE = {};
+for (const r of CAT.rules) { const s = r.scope || "candidate"; SCOPE[s] = (SCOPE[s] || 0) + 1; }
+const TOTAL = CAT.rules.length;
+const EXEC = RULESET.rules.length;
+const N_CALC = RULESET.rules.filter((r) => r.check && r.check.type === "calculation").length;
+const COVERED = SCOPE.covered_by || 0;
+const OOS = SCOPE.out_of_scope || 0;
+const CAND = SCOPE.candidate || 0;
+const OFF = SCOPE.switched_off || 0;
+const FILEVAL = TOTAL - OFF - OOS;
+const EFFECTIVE = EXEC + COVERED;
+const PCT = FILEVAL ? Math.round((100 * EFFECTIVE) / FILEVAL) : 0;
+
 // --- Byggehjælpere ---------------------------------------------------------
 const H1 = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(t)] });
 const H2 = (t) => new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(t)] });
@@ -120,7 +137,7 @@ const overblik = makeDoc([
     ["Skema-validering (lag 1)", "Dækket", "Direkte mod OECD's officielle GIR-XSD; XXE slået fra; testet."],
     ["Strukturel integritet (lag 2)", "Dækket", "Rod/MessageSpec/GLOBEBody/sektioner + CompanyContext-udtræk."],
     ["OECD-regelgrundlag (dokumentation)", "Dækket", "Alle 163 officielle regler udtrukket og klassificeret; 4 switched-off respekteres; provenance."],
-    ["OECD-regelmotor (lag 3-4)", "Dækket (voksende)", "78/163 regler eksekverbare (15 beregningsregler); datadrevet motor dækker alle check-kategorier."],
+    ["OECD-regelmotor (lag 3-4)", "Dækket (voksende)", `${EXEC}/${TOTAL} regler eksekverbare (${N_CALC} beregningsregler); datadrevet motor dækker alle check-kategorier.`],
     ["Auth & adgang", "Dækket", "Central BALAI-brugerstyring (balai_auth): delt SSO på *.balai.dk, per-tool-adgang via slug 'pillar2', session/CSRF/rate-limit."],
     ["Uafhængig validering", "Dækket", "Valideringssuite: én planted defekt pr. eksekverbar kontrol (78/78 består), golden-GIR ren, gated i CI."],
     ["Sikkerhed (HTTP/input)", "Dækket (review udestår)", "Stram CSP uden CDN'er, HSTS, fuld header-pakke, XXE fra, parametreret. Fuld databehandlingsbeskrivelse skal review'es."],
@@ -131,7 +148,18 @@ const overblik = makeDoc([
     ["Testsuite", "Dækket (voksende)", "74 enhedstests + valideringssuite + lint-port."],
   ], [2900, 1700, 4760]),
 
-  H1("4. Åbne punkter (kræver EY / eksterne beslutninger)"),
+  H1("4. Regeldækning (ærligt billede)"),
+  P(`Det officielle katalog rummer ${TOTAL} regler. De er ikke alle beregnet til et fil-valideringsværktøj: en del er transmissions-/modtagerstatus eller afhænger af besked-/korrektionshistorik på tværs af indsendelser. Fordelingen er:`),
+  table(["Kategori", "Antal", "Forklaring"], [
+    ["Eksekverbare kontroller", String(EXEC), "Kodet i regelmotoren og verificeret af valideringssuiten (én planted defekt pr. kontrol)."],
+    ["Dækket af ækvivalent regel", String(COVERED), "Samme semantik håndhæves allerede af en eksekverbar regel."],
+    ["Kandidater (kan kodes)", String(CAND), "Fil-validerbare regler der endnu ikke er kodet; kodes batch-vis."],
+    ["Uden for scope (fil-validering)", String(OOS), "Transmissions-/modtagerstatus, kryds-besked-/korrektionshistorik eller eksternt register."],
+    ["Slået fra (2026-guidance)", String(OFF), "Fyres aldrig jf. juni-2026-guidance."],
+  ], [3100, 1000, 5260]),
+  P(`Fil-validerbare regler i alt: ${FILEVAL} (katalog minus switched-off og uden-for-scope). Effektivt dækket: ${EFFECTIVE} (eksekverbare + ækvivalent) = ${PCT} %. De resterende ${CAND} kandidater kodes batch-vis. Den fulde klassifikation pr. regel ligger i sporbarhedsmatrixen (fane "Dækningsoverblik" + "Fuldt katalog").`, { bold: true }),
+
+  H1("5. Åbne punkter (kræver EY / eksterne beslutninger)"),
   P("Disse kan ikke lukkes i koden alene — de kræver beslutninger, adgang eller eksterne parter:"),
   ...bullets([
     "Mapning mod EY's konkrete godkendelsesskabelon (denne pakke er skrevet efter best practice).",
@@ -144,7 +172,7 @@ const overblik = makeDoc([
     "Support- og vedligeholdelsesmodel samt rolle-/ansvarsbeskrivelse.",
   ]),
 
-  H1("5. Anbefalet rækkefølge mod godkendelse"),
+  H1("6. Anbefalet rækkefølge mod godkendelse"),
   ...numbered([
     "Forelæg pakken for EY's tool-governance og få den konkrete godkendelsesskabelon.",
     "Indpas de fire dokumenter + matrix/rapport i EY's skabelon og afklar manglende afsnit.",

@@ -100,18 +100,58 @@ def sheet_sporbarhed(wb, rules, cov):
         ])
 
 
+_SCOPE_DA = {
+    "executable": "Eksekverbar",
+    "covered_by": "Dækket af ækvivalent regel",
+    "candidate": "Kandidat (kan kodes)",
+    "out_of_scope": "Uden for scope (fil-validering)",
+    "switched_off": "Slået fra (2026-guidance)",
+}
+
+
 def sheet_katalog(wb, catalogue, impl_codes, off):
     ws = wb.create_sheet("Fuldt katalog")
-    _style(ws, ["Kode", "Niveau", "Kategori", "Eksekverbar", "Switched-off 2026",
+    _style(ws, ["Kode", "Niveau", "Kategori", "Scope", "Begrundelse / dækket af",
                 "Target (XPath)", "Reference"],
-           [10, 9, 18, 13, 18, 52, 30])
+           [10, 9, 16, 28, 46, 44, 26])
     for r in catalogue["rules"]:
+        scope = r.get("scope", "candidate")
+        note = r.get("scope_reason", "")
+        if scope == "covered_by" and r.get("covered_by"):
+            note = note or f"Dækket af regel {r['covered_by']}."
         _row(ws, [
             r["code"], r.get("level", ""), r.get("category", ""),
-            "Ja" if r["code"] in impl_codes else "Nej",
-            "Ja (fyres aldrig)" if r["code"] in off else "Nej",
+            _SCOPE_DA.get(scope, scope), note,
             r.get("target") or "", r.get("reference") or "",
         ])
+
+
+def sheet_daekning(wb, cov):
+    ws = wb.create_sheet("Dækningsoverblik", 0)
+    _style(ws, ["Kategori", "Antal", "Forklaring"], [34, 10, 60])
+    s = cov["scope"]
+    rows = [
+        ["Eksekverbare kontroller", s.get("executable", 0),
+         "Kodet i regelmotoren og verificeret af valideringssuiten (én planted defekt pr. kontrol)."],
+        ["Dækket af ækvivalent regel", s.get("covered_by", 0),
+         "Samme semantik håndhæves allerede af en eksekverbar regel (fx AdjustmentItem-unikhed pr. ETR)."],
+        ["Kandidater (kan kodes)", s.get("candidate", 0),
+         "Fil-validerbare regler der endnu ikke er kodet; kodes batch-vis."],
+        ["Uden for scope (fil-validering)", s.get("out_of_scope", 0),
+         "Transmissions-/modtagerstatus, kryds-besked-/korrektionshistorik eller eksternt register — kan ikke afgøres ud fra én GIR-fils indhold."],
+        ["Slået fra (2026-guidance)", s.get("switched_off", 0),
+         "Fyres aldrig jf. juni-2026-guidance."],
+        ["I ALT (officielt katalog)", cov["total_catalogue"], ""],
+    ]
+    for r in rows:
+        _row(ws, r)
+    ws.append([])
+    _row(ws, ["Fil-validerbare regler i alt", cov["file_validatable"],
+              "Officielt katalog minus switched-off og uden-for-scope."])
+    _row(ws, ["Effektivt dækket", cov["effectively_covered"],
+              "Eksekverbare + dækket-af-ækvivalent."])
+    pct = round(100 * cov["effectively_covered"] / cov["file_validatable"]) if cov["file_validatable"] else 0
+    _row(ws, ["Dækningsgrad (fil-validerbare)", f"{pct}%", ""])
 
 
 def sheet_referencedata(wb):
@@ -163,17 +203,19 @@ def main():
     catalogue = load_catalogue()
     off = switched_off_codes()
     impl_codes = {r["oecd_rule"] for r in rules}
-    cov, base_ok = _validation_coverage()
+    valcov, base_ok = _validation_coverage()   # pr-regel valideringsstatus
+    cov_stats = coverage()                      # scope-/dækningsstatistik
 
     wb = Workbook()
-    sheet_sporbarhed(wb, rules, cov)
+    sheet_sporbarhed(wb, rules, valcov)
     sheet_katalog(wb, catalogue, impl_codes, off)
     sheet_referencedata(wb)
     sheet_severity(wb, cat)
+    sheet_daekning(wb, cov_stats)   # indsættes som første fane (index 0)
 
     os.makedirs(DOCS, exist_ok=True)
     wb.save(OUT)
-    c = coverage()
+    c = cov_stats
     print(f"Skrev {OUT}")
     print(f"  Katalogversion: {cat.catalog_version}")
     print(f"  Eksekverbare: {c['executable']}/{c['total_catalogue']} "

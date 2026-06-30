@@ -3,6 +3,21 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## 0.17.0 — 2026-06-30
+
+**Regel-triage: ærligt dækningsbillede (scope-klassifikation).**
+
+- Alle 163 katalogregler er klassificeret med et `scope`-felt: **87 eksekverbare**,
+  **5 dækket af ækvivalent regel** (70063/70080/70119/70121 → 70059; 70069 → 70067),
+  **51 kandidater**, **16 uden for scope** (transmissions-/modtagerstatus 50001-50011,
+  kryds-besked-/korrektionshistorik 60002/60008/60009/60014, eksternt TIN-register
+  70004) og **4 slået fra** (2026-guidance). Hver markering har en begrundelse.
+- `coverage()` eksponerer nu scope-fordeling: fil-validerbare = 143 (katalog − 4
+  switched-off − 16 out-of-scope); **effektivt dækket = 92/143 ≈ 64 %**.
+- Sporbarhedsmatrixen har ny fane "Dækningsoverblik" + scope-kolonner i "Fuldt
+  katalog". Godkendelses-overblik-docx har nyt afsnit 4 "Regeldækning (ærligt
+  billede)". Docx-nøgletal beregnes nu fra kataloget (ingen hardkodede tal → ingen drift).
+
 ## 0.16.0 — 2026-06-30
 
 **Motor-udvidelse: dato-aware conditional + relativ år-grænse → 5 nye regler.**

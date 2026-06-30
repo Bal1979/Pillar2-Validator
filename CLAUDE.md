@@ -25,7 +25,7 @@ Pipeline lag 1-4 implementeret og testet. Nøgletal (version/regler/typer/tests)
 holdes ajour af `tools/update_docs.py` — se blokken nedenfor:
 
 <!-- STATS:START -->
-**Nøgletal (katalog 0.16.0):** 87/163 OECD-regler eksekverbare (heraf 19 beregningsregler) · 14 check-typer · 77 tests grønne.
+**Nøgletal (katalog 0.17.0):** 87/163 OECD-regler eksekverbare (heraf 19 beregningsregler) · 14 check-typer · 78 tests grønne.
 <!-- STATS:END -->
 
 - **Regelgrundlag (komplet).** `reference/oecd_validation_rules_catalogue.json` =

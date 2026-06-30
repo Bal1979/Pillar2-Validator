@@ -67,14 +67,28 @@ def switched_off_codes() -> frozenset:
 
 
 def coverage() -> Dict:
-    """Dækningsstatistik: hvor mange af de officielle regler er eksekverbare."""
+    """Dækningsstatistik: hvor mange af de officielle regler er eksekverbare,
+    samt scope-fordeling (executable / covered_by / candidate / out_of_scope /
+    switched_off) fra kataloget. file_validatable = alt undtagen switched_off og
+    out_of_scope; effektivt dækket = executable + covered_by."""
     try:
-        total = len(load_catalogue().get("rules", []))
+        rules = load_catalogue().get("rules", [])
     except Exception:
-        total = 0
+        rules = []
+    total = len(rules)
     executable = len(load_oecd_rules().get("rules", []))
+    scope: Dict[str, int] = {}
+    for r in rules:
+        scope[r.get("scope", "candidate")] = scope.get(r.get("scope", "candidate"), 0) + 1
+    covered_by = scope.get("covered_by", 0)
+    out_of_scope = scope.get("out_of_scope", 0)
+    file_validatable = total - scope.get("switched_off", 0) - out_of_scope
     return {"total_catalogue": total, "executable": executable,
-            "switched_off": len(switched_off_codes())}
+            "switched_off": len(switched_off_codes()),
+            "scope": scope, "covered_by": covered_by, "out_of_scope": out_of_scope,
+            "candidates": scope.get("candidate", 0),
+            "file_validatable": file_validatable,
+            "effectively_covered": executable + covered_by}
 
 
 def validate_ruleset(data: Dict) -> None:

@@ -2,8 +2,8 @@
 
 Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at plante ÉN målrettet defekt og bekræfte, at netop den tilsigtede kontrol udløses i regelmotoren — og at den rene golden-GIR ikke giver fund. Suiten er reproducerbar og køres som CI-port (`python -m validation.run_validation`).
 
-- **Genereret:** 2026-06-30 12:14 UTC
-- **Regelkatalog:** v0.16.0
+- **Genereret:** 2026-06-30 12:41 UTC
+- **Regelkatalog:** v0.17.0
 - **Eksekverbare kontroller:** 87
 - **Ren golden-GIR uden fund:** JA
 - **Auto-scenarier bestået:** 87 / 87

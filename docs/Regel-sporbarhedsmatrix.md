@@ -2,7 +2,7 @@
 
 Auto-genereret af `tools/update_docs.py`. Regenereres efter hver batch.
 
-Katalogversion: **0.16.0** · OECD-regelliste: **163**, heraf **87** eksekverbare (inkl. 19 beregningsregler).
+Katalogversion: **0.17.0** · OECD-regelliste: **163**, heraf **87** eksekverbare (inkl. 19 beregningsregler).
 
 ## Lag 3-4 — eksekverbare OECD-regler
 

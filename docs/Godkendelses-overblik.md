@@ -9,7 +9,7 @@ og `Sikkerhed_og_databehandling.md`.
 produktionsbrug med klientdata. Klassifikation: Fortroligt — internt.
 
 <!-- STATS:START -->
-**Nøgletal (katalog 0.16.0):** 87/163 OECD-regler eksekverbare (heraf 19 beregningsregler) · 14 check-typer · 77 tests grønne.
+**Nøgletal (katalog 0.17.0):** 87/163 OECD-regler eksekverbare (heraf 19 beregningsregler) · 14 check-typer · 78 tests grønne.
 <!-- STATS:END -->
 
 ## Parathed pr. område

@@ -792,3 +792,15 @@ def test_validation_suite_all_pass():
     assert not failed, f"valideringsscenarier fejlede: {failed}"
     # Forventet: hver eksekverbar regel har et auto-scenarie.
     assert len(auto) == data["executable"]
+
+
+# --- Scope-triage: ærligt dækningsbillede ----------------------------------
+def test_scope_classification_complete():
+    """Hver katalogregel har et scope, og summen rammer hele kataloget."""
+    from validator.rules.oecd_rules import coverage
+    c = coverage()
+    assert sum(c["scope"].values()) == c["total_catalogue"] == 163
+    # Eksekverbare i scope = eksekverbare i regelfilen.
+    assert c["scope"].get("executable") == c["executable"]
+    # Fil-validerbare = katalog − switched_off − out_of_scope.
+    assert c["file_validatable"] == 163 - c["scope"].get("switched_off", 0) - c["out_of_scope"]
