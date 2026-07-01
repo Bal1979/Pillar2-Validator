@@ -2,11 +2,11 @@
 
 Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at plante ÉN målrettet defekt og bekræfte, at netop den tilsigtede kontrol udløses i regelmotoren — og at den rene golden-GIR ikke giver fund. Suiten er reproducerbar og køres som CI-port (`python -m validation.run_validation`).
 
-- **Genereret:** 2026-06-30 12:51 UTC
-- **Regelkatalog:** v0.18.0
-- **Eksekverbare kontroller:** 92
+- **Genereret:** 2026-07-01 07:32 UTC
+- **Regelkatalog:** v0.19.0
+- **Eksekverbare kontroller:** 97
 - **Ren golden-GIR uden fund:** JA
-- **Auto-scenarier bestået:** 92 / 92
+- **Auto-scenarier bestået:** 97 / 97
 
 ## Resultater
 
@@ -17,9 +17,12 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **60007** | file | unique | DocRefId skal være unik | ✅ Bestået | 60007 |
 | **60012** | file | forbidden_if | CorrDocRefId må ikke angives ved ny data | ✅ Bestået | 60012 |
 | **60015** | file | required_if | CorrDocRefId kræves ved rettelse/sletning | ✅ Bestået | 60015 |
+| **60016** | file | conditional | FilingInfo OECD0 → GeneralSection må ikke være OECD1 | ✅ Bestået | 60016 |
+| **60017** | file | conditional | FilingInfo OECD1 kræver GeneralSection | ✅ Bestået | 60017 |
 | **60020** | file | compare | Periodens startdato må ikke ligge efter slutdato | ✅ Bestået | 60020 |
 | **60021** | file | compare | Periodens slutdato må ikke ligge efter rapporteringsperioden | ✅ Bestået | 60021 |
 | **60023** | file | compare | FilingCE's land skal matche afsenderlandet | ✅ Bestået | 60023 |
+| **60024** | file | conditional | Summary-indhold kræver JurWithTaxingRights/JurisdictionName | ✅ Bestået | 60024 |
 | **60027** | file | calculation | IIR ParentEntity TopUpTax-beregning | ✅ Bestået | 60027 |
 | **70015** | file | conditional | GIR308 kræver en tilsvarende GIR307-enhed | ✅ Bestået | 70015 |
 | **70019** | file | conditional | GIR305 kræver en tilsvarende GIR306-enhed | ✅ Bestået | 70019 |
@@ -49,8 +52,10 @@ Uafhængig valideringssuite: hver eksekverbar OECD-kontrol verificeres ved at pl
 | **70032** | record | conditional | QIIR kræver CE-Rules GIR201 eller GIR202 | ✅ Bestået | 70032 |
 | **70038** | record | conditional | Transitional CbCR SafeHarbour udløber efter 30/06/2028 | ✅ Bestået | 70038, 70045, 70047 |
 | **70039** | record | conditional | UTPR SafeHarbour (GIR1206) udløber efter 31/12/2026 | ✅ Bestået | 70039, 70049 |
+| **70043** | record | conditional | JurWithTaxingRights + SafeHarbour GIR1202 kræver ETRRange/SBIE/QDMTTut | ✅ Bestået | 60024, 70043 |
 | **70044** | record | conditional | ETRStatus skal indeholde ETRException eller ETRComputation | ✅ Bestået | 70044 |
 | **70045** | record | conditional | SafeHarbour GIR1203-1205 kræver TransitionalCbCRSafeHarbour | ✅ Bestået | 70045, 70047 |
+| **70046** | record | conditional | TransitionalCbCRSafeHarbour kræver SubGroup med GIR1607/1608 | ✅ Bestået | 70046 |
 | **70047** | record | conditional | SafeHarbour GIR1203 kræver Revenue | ✅ Bestået | 70045, 70047 |
 | **70048** | record | conditional | SafeHarbour GIR1204 kræver IncomeTax | ✅ Bestået | 70045, 70048 |
 | **70049** | record | conditional | SafeHarbour GIR1206 kræver UTPRSafeHarbour | ✅ Bestået | 70049 |

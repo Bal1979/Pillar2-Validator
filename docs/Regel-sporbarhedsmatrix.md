@@ -2,7 +2,7 @@
 
 Auto-genereret af `tools/update_docs.py`. Regenereres efter hver batch.
 
-Katalogversion: **0.18.0** · OECD-regelliste: **163**, heraf **92** eksekverbare (inkl. 19 beregningsregler).
+Katalogversion: **0.19.0** · OECD-regelliste: **163**, heraf **97** eksekverbare (inkl. 19 beregningsregler).
 
 ## Lag 3-4 — eksekverbare OECD-regler
 
@@ -100,6 +100,11 @@ Katalogversion: **0.18.0** · OECD-regelliste: **163**, heraf **92** eksekverbar
 | 70106 | record | not_equal | OtherTIN må ikke matche CEComputation-TIN | OECD Status Message User Guide Part 4 — regel 70106 |
 | 70116 | record | conditional | AdjustmentItem GIR2025 kræver IntShippingIncome (CEComputation) | OECD Status Message User Guide Part 4 — regel 70116 |
 | 70117 | record | conditional | AdjustmentItem GIR2024 kræver Art7.6 (CEComputation) | OECD Status Message User Guide Part 4 — regel 70117 |
+| 60016 | file | conditional | FilingInfo OECD0 → GeneralSection må ikke være OECD1 | OECD Status Message User Guide Part 4 — regel 60016 |
+| 60017 | file | conditional | FilingInfo OECD1 kræver GeneralSection | OECD Status Message User Guide Part 4 — regel 60017 |
+| 60024 | file | conditional | Summary-indhold kræver JurWithTaxingRights/JurisdictionName | OECD Status Message User Guide Part 4 — regel 60024 |
+| 70043 | record | conditional | JurWithTaxingRights + SafeHarbour GIR1202 kræver ETRRange/SBIE/QDMTTut | OECD Status Message User Guide Part 4 — regel 70043 |
+| 70046 | record | conditional | TransitionalCbCRSafeHarbour kræver SubGroup med GIR1607/1608 | OECD Status Message User Guide Part 4 — regel 70046 |
 
 ## Dækning pr. check-type-kategori
 
@@ -117,4 +122,4 @@ Katalogversion: **0.18.0** · OECD-regelliste: **163**, heraf **92** eksekverbar
 | mutually_exclusive | 1 | ✅ |
 | not_equal | 1 | ✅ |
 
-**Eksekverbar dækning:** 92/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.
+**Eksekverbar dækning:** 97/163. 4 regler slået fra (fyres aldrig). Hver kodet regel er verificeret med negativ test + mod golden-fixturen `tests/fixtures/gir_valid_rich.xml`.

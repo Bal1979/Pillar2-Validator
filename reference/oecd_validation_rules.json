@@ -2285,6 +2285,159 @@
       "message_da": "AdjustmentItem GIR2024 kræver et udfyldt Art7.6-element i CEComputation.",
       "fix_da": "Udfyld Art7.6 når GIR2024 anvendes.",
       "authority": "OECD Status Message User Guide Part 4 — regel 70117"
+    },
+    {
+      "id": "OECD-60016",
+      "oecd_rule": "60016",
+      "level": "file",
+      "name_da": "FilingInfo OECD0 → GeneralSection må ikke være OECD1",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:GLOBEBody",
+        "when": [
+          {
+            "path": ".//globe:FilingInfo/globe:DocSpec/stf:DocTypeIndic",
+            "op": "in",
+            "value": [
+              "OECD0"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": ".//globe:GeneralSection/globe:DocSpec/stf:DocTypeIndic",
+            "op": "not_in",
+            "value": [
+              "OECD1"
+            ]
+          }
+        ]
+      },
+      "message_da": "FilingInfo har DocTypeIndic OECD0 (resend), men GeneralSection er markeret OECD1 (ny data).",
+      "fix_da": "Ret GeneralSection DocTypeIndic, så den ikke er OECD1 ved en FilingInfo-resend.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60016"
+    },
+    {
+      "id": "OECD-60017",
+      "oecd_rule": "60017",
+      "level": "file",
+      "name_da": "FilingInfo OECD1 kræver GeneralSection",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:GLOBEBody",
+        "when": [
+          {
+            "path": ".//globe:FilingInfo/globe:DocSpec/stf:DocTypeIndic",
+            "op": "in",
+            "value": [
+              "OECD1"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:GeneralSection",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "FilingInfo har DocTypeIndic OECD1 (ny data), men der er ingen GeneralSection.",
+      "fix_da": "Tilføj GeneralSection når FilingInfo indsendes som ny data (OECD1).",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60017"
+    },
+    {
+      "id": "OECD-60024",
+      "oecd_rule": "60024",
+      "level": "file",
+      "name_da": "Summary-indhold kræver JurWithTaxingRights/JurisdictionName",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:Summary",
+        "when": [
+          {
+            "path": "globe:SafeHarbour|globe:ETRRange|globe:SBIE|globe:QDMTTut|globe:GLoBETut",
+            "op": "present"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:JurWithTaxingRights/globe:JurisdictionName",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "Summary indeholder SafeHarbour/ETRRange/SBIE/QDMTTut/GLoBETut, men JurWithTaxingRights/JurisdictionName mangler.",
+      "fix_da": "Udfyld JurWithTaxingRights/JurisdictionName for jurisdiktionen.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 60024"
+    },
+    {
+      "id": "OECD-70043",
+      "oecd_rule": "70043",
+      "level": "record",
+      "name_da": "JurWithTaxingRights + SafeHarbour GIR1202 kræver ETRRange/SBIE/QDMTTut",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:Summary",
+        "when": [
+          {
+            "path": "globe:JurWithTaxingRights",
+            "op": "present"
+          },
+          {
+            "path": "globe:SafeHarbour",
+            "op": "in",
+            "value": [
+              "GIR1202"
+            ]
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:ETRRange",
+            "op": "present"
+          },
+          {
+            "path": "globe:SBIE",
+            "op": "present"
+          },
+          {
+            "path": "globe:QDMTTut",
+            "op": "present"
+          }
+        ]
+      },
+      "message_da": "JurWithTaxingRights er udfyldt og SafeHarbour er GIR1202, men ETRRange/SBIE/QDMTTut mangler.",
+      "fix_da": "Udfyld ETRRange, SBIE og QDMTTut.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70043"
+    },
+    {
+      "id": "OECD-70046",
+      "oecd_rule": "70046",
+      "level": "record",
+      "name_da": "TransitionalCbCRSafeHarbour kræver SubGroup med GIR1607/1608",
+      "check": {
+        "type": "conditional",
+        "container": ".//globe:ETR",
+        "when": [
+          {
+            "path": ".//globe:TransitionalCbCRSafeHarbour",
+            "op": "present"
+          }
+        ],
+        "then": [
+          {
+            "path": "globe:SubGroup/globe:TypeofSubGroup",
+            "op": "in",
+            "value": [
+              "GIR1607",
+              "GIR1608"
+            ]
+          }
+        ]
+      },
+      "message_da": "TransitionalCbCRSafeHarbour er udfyldt, men ETR'ens SubGroup/TypeofSubGroup er ikke GIR1607 eller GIR1608.",
+      "fix_da": "Udfyld SubGroup/TypeofSubGroup med GIR1607 eller GIR1608.",
+      "authority": "OECD Status Message User Guide Part 4 — regel 70046"
     }
   ]
 }

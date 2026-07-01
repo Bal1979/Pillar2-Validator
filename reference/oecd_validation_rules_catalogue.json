@@ -7,11 +7,11 @@
   "file": 39,
   "record": 124,
   "switched_off": 4,
-  "executable": 92,
+  "executable": 97,
   "scope": {
    "out_of_scope": 16,
-   "candidate": 46,
-   "executable": 92,
+   "candidate": 41,
+   "executable": 97,
    "switched_off": 4,
    "covered_by": 5
   }
@@ -353,8 +353,8 @@
    "rule_text": "If the value of FilingInfo DoctypeIndic element is OECD0, if General Section is provided, the value of GeneralSection DocTypeIndic element must not be OECD1.",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "60017",
@@ -365,8 +365,8 @@
    "rule_text": "If the value of FilingInfo DoctypeIndic element is OECD1, the GeneralSection must be provided.",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "60018",
@@ -449,8 +449,8 @@
    "rule_text": "If the Summary contains any of the following elements: SafeHarbour, ETRRange, SBIE, QDMTTut, GLoBETut, then the JurWithTaxingRights/JurisdictionName must be provided.",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "60025",
@@ -1014,8 +1014,8 @@
    "rule_text": "If the JurWithTaxingRights element is completed, and the Safe Harbour element has the value of GIR1202, then the elements ETRRange, SBIE and QDMTTut must be completed",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70044",
@@ -1050,8 +1050,8 @@
    "rule_text": "When the TransitionalCbCRSafeHarbour is completed for a jurisdiction, then Subgroup element of the ETR must be completed, the TypeofSubGroup must contain either GIR1607 or GIR1608.",
    "category": "conditional",
    "switched_off_2026": false,
-   "executable": false,
-   "scope": "candidate"
+   "executable": true,
+   "scope": "executable"
   },
   {
    "code": "70047",

@@ -10,7 +10,7 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | File-level | 39 |
 | Record-level | 124 |
 | Slået fra (2026) | 4 |
-| **Eksekverbare i dag** | **92** (heraf 19 beregningsregler) |
+| **Eksekverbare i dag** | **97** (heraf 19 beregningsregler) |
 
 ## Regler pr. check-type (klassificeret)
 
@@ -140,6 +140,11 @@ Auto-genereret af `tools/update_docs.py`. Fuldt officielt regelgrundlag udtrukke
 | 70106 | record | not_equal | OtherTIN må ikke matche CEComputation-TIN |
 | 70116 | record | conditional | AdjustmentItem GIR2025 kræver IntShippingIncome (CEComputation) |
 | 70117 | record | conditional | AdjustmentItem GIR2024 kræver Art7.6 (CEComputation) |
+| 60016 | file | conditional | FilingInfo OECD0 → GeneralSection må ikke være OECD1 |
+| 60017 | file | conditional | FilingInfo OECD1 kræver GeneralSection |
+| 60024 | file | conditional | Summary-indhold kræver JurWithTaxingRights/JurisdictionName |
+| 70043 | record | conditional | JurWithTaxingRights + SafeHarbour GIR1202 kræver ETRRange/SBIE/QDMTTut |
+| 70046 | record | conditional | TransitionalCbCRSafeHarbour kræver SubGroup med GIR1607/1608 |
 
 ## Slået fra for første filing-cyklus (juni-2026-guidance)
 

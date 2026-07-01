@@ -1,6 +1,6 @@
 {
   "$schema": "https://balai.dk/schemas/p2-validation-rules-v1.json",
-  "catalog_version": "0.18.0",
+  "catalog_version": "0.19.0",
   "catalog_released": "2026-06-25",
   "language": "da",
   "description": "BALAI Pillar II GIR-Validator — regelkatalog (skelet, Fase 0). Hver regel er maskinlæsbar og tilhører ét af otte lag. Severity er enten statisk eller beregnes dynamisk via materialitetsprofiler. Lag 3-8 udfyldes i senere faser; se ARCHITECTURE.md.",

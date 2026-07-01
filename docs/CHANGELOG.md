@@ -3,6 +3,17 @@
 Versionering følger regelkataloget (`validator/rules/P2-Validation-Rules.json`,
 `catalog_version`). Dokumenterne versioneres sammen med koden.
 
+## 0.19.0 — 2026-07-01
+
+**FilingInfo-/Summary-/SafeHarbour-conditionals (kryds-sektion).**
+
+- Dækning 92 → **97 regler** (+5): 60016 (FilingInfo OECD0 → GeneralSection ikke
+  OECD1), 60017 (FilingInfo OECD1 → GeneralSection kræves), 60024 (Summary-indhold
+  → JurWithTaxingRights/JurisdictionName), 70043 (JurWithTaxingRights + SafeHarbour
+  GIR1202 → ETRRange/SBIE/QDMTTut), 70046 (TransitionalCbCRSafeHarbour → SubGroup
+  med GIR1607/1608).
+- Kandidater 46 → 41. Valideringssuite **97/97**, golden-GIR ren. Pakke regenereret.
+
 ## 0.18.0 — 2026-06-30
 
 **CEComputation-conditionals + TIN-ulighed.**

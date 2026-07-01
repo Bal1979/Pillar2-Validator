@@ -187,7 +187,7 @@ def test_app_requires_login():
 def test_app_valider_renders_report():
     import app as app_module
     client = _login_pillar2(app_module)
-    with open(VALID_GIR, "rb") as fh:
+    with open(RICH_GIR, "rb") as fh:   # komplet golden-fixtur → fuldt godkendt
         r = client.post("/valider", data={"file": (fh, "gir.xml")},
                         content_type="multipart/form-data")
     assert r.status_code == 200
@@ -215,7 +215,10 @@ def test_oecd_ruleset_lints():
 
 
 def test_valid_gir_has_no_oecd_violations():
-    outcome = run_pipeline(VALID_GIR)
+    # Den KOMPLETTE golden-fixtur er facit for "ingen OECD-fund". Den minimale
+    # gir_valid.xml er bevidst ufuldstændig (fx FilingInfo OECD1 uden
+    # GeneralSection → regel 60017 fanger den korrekt), så den bruges ikke her.
+    outcome = run_pipeline(RICH_GIR)
     assert outcome.layers_run == [1, 2, 3, 4]
     assert all(f.rule_id not in ("P2-030", "P2-040") for f in outcome.findings)
 
@@ -349,7 +352,29 @@ def test_corrdocrefid_unique(tmp_path):
 
 def test_executable_coverage_grew():
     from validator.rules.oecd_rules import coverage
-    assert coverage()["executable"] == 92
+    assert coverage()["executable"] == 97
+
+
+# --- Batch 19: FilingInfo/Summary/SafeHarbour-conditionals -----------------
+def test_filinginfo_oecd1_requires_generalsection_60017():
+    bad = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2"'
+           b' xmlns:s="urn:oecd:ties:globestf:v5"><g:GLOBEBody>'
+           b'<g:FilingInfo><g:DocSpec><s:DocTypeIndic>OECD1</s:DocTypeIndic>'
+           b'</g:DocSpec></g:FilingInfo></g:GLOBEBody></g:GLOBE_OECD>')
+    good = bad.replace(b"</g:FilingInfo>",
+                       b"</g:FilingInfo><g:GeneralSection>X</g:GeneralSection>")
+    assert "60017" in _eval_real(bad)
+    assert "60017" not in _eval_real(good)
+
+
+def test_transitional_cbcr_requires_subgroup_70046():
+    bad = (b'<g:GLOBE_OECD xmlns:g="urn:oecd:ties:globe:v2"><g:ETR>'
+           b'<g:TransitionalCbCRSafeHarbour>X</g:TransitionalCbCRSafeHarbour>'
+           b'<g:SubGroup><g:TypeofSubGroup>GIR1600</g:TypeofSubGroup></g:SubGroup>'
+           b'</g:ETR></g:GLOBE_OECD>')
+    good = bad.replace(b"GIR1600", b"GIR1607")
+    assert "70046" in _eval_real(bad)
+    assert "70046" not in _eval_real(good)
 
 
 # --- Batch 18: CEComputation-conditionals + TIN-ulighed --------------------
