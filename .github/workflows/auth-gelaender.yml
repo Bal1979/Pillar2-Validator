@@ -1,0 +1,20 @@
+# Gelænder fra auth-konsolideringen (2026-09-11): balai_auth hentes som pinnet
+# pakke (requirements.txt) — en re-vendoret kopi vil rådne og genindføre driften.
+# Repoet har ingen øvrig CI; dette workflow er bevidst minimalt og kræver intet token.
+name: Auth-gelænder
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gelaender:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vendored balai_auth må ikke genopstå
+        run: |
+          if [ -d "balai_auth" ]; then
+            echo "::error::balai_auth/ er re-vendoret. Brug den pinnede pakke i requirements.txt (se balai-platform/AUTH-DRIFT-og-konsolidering.md)."
+            exit 1
+          fi
